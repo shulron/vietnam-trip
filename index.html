@@ -1544,18 +1544,21 @@ function CurrencyView() {
   const [usd, setUsd] = useState('');
   const [vnd, setVnd] = useState('');
 
+  const parseNum = (s) => parseFloat(String(s).replace(/,/g, ''));
+  const fmtNum = (n, dec) => isNaN(n) ? '' : n.toLocaleString('he-IL', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+
   const convert = (from, val) => {
-    const n = parseFloat(val);
-    if (isNaN(n)) { setIls(''); setUsd(''); setVnd(''); return; }
+    const n = parseNum(val);
+    if (isNaN(n) || val === '') { setIls(''); setUsd(''); setVnd(''); return; }
     if (from === 'ils') {
       const u = n / rates.ilsPerUsd;
-      setUsd(u.toFixed(2)); setVnd((u * rates.vndPerUsd).toFixed(0));
+      setUsd(fmtNum(u, 2)); setVnd(fmtNum(u * rates.vndPerUsd, 0));
     } else if (from === 'usd') {
       const i = n * rates.ilsPerUsd;
-      setIls(i.toFixed(2)); setVnd((n * rates.vndPerUsd).toFixed(0));
+      setIls(fmtNum(i, 2)); setVnd(fmtNum(n * rates.vndPerUsd, 0));
     } else {
       const u = n / rates.vndPerUsd;
-      setIls((u * rates.ilsPerUsd).toFixed(2)); setUsd(u.toFixed(3));
+      setIls(fmtNum(u * rates.ilsPerUsd, 2)); setUsd(fmtNum(u, 3));
     }
   };
 
@@ -1580,7 +1583,7 @@ function CurrencyView() {
           ].map(({label,key,val,set}) => (
             <div key={key} className="curr-row">
               <span className="curr-label" style={{fontSize:'.75rem',fontWeight:700}}>{label}</span>
-              <input className="curr-input" type="number" value={val} onChange={e=>set(e.target.value)} placeholder="0" />
+              <input className="curr-input" type="text" inputMode="decimal" value={val} onChange={e=>set(e.target.value)} placeholder="0" />
             </div>
           ))}
         </div>
