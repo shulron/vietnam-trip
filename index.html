@@ -1518,10 +1518,11 @@ function useCurrencyRates() {
       const c = JSON.parse(localStorage.getItem(RATES_CACHE_KEY) || 'null');
       if (c && Date.now() - c.ts < 86400000) return;
     } catch {}
-    fetch('https://api.frankfurter.app/latest?from=USD&to=ILS,VND')
+    fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json')
       .then(r => r.json())
       .then(j => {
-        const updated = {vndPerUsd: Math.round(j.rates.VND), ilsPerUsd: j.rates.ILS, ts: Date.now()};
+        const usd = j.usd;
+        const updated = {vndPerUsd: Math.round(usd.vnd), ilsPerUsd: Math.round(usd.ils * 100) / 100, ts: Date.now()};
         localStorage.setItem(RATES_CACHE_KEY, JSON.stringify(updated));
         setRates(updated);
       })
