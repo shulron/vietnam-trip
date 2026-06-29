@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>ויטנאם 2025 🌏</title>
+<title>ויטנאם 2026 🌏</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -75,6 +75,28 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;di
 .schedule-item:last-child{border:none;padding-bottom:0}
 .sched-time{font-size:.78rem;font-weight:700;color:var(--region-color,#1B6B5E);min-width:60px;padding-top:1px}
 .sched-text{font-size:.85rem;color:#2d3748;line-height:1.5;flex:1}
+.sched-edit-btn{background:none;border:none;cursor:pointer;font-size:.95rem;padding:4px 8px;
+  color:var(--muted);border-radius:6px;margin-right:auto}
+.sched-secondary{font-size:.74rem;color:var(--muted);margin-top:3px;display:flex;flex-direction:column;gap:2px}
+.sched-edit-item{padding:10px 0;border-bottom:1px solid #f0f4f8;display:flex;flex-direction:column;gap:6px}
+.sched-edit-item:last-child{border:none}
+.sched-edit-row{display:flex;gap:8px;align-items:flex-start}
+.sched-edit-time{width:72px;flex-shrink:0;border:1.5px solid #e2e8f0;border-radius:8px;
+  padding:7px 6px;font-family:inherit;font-size:.8rem;font-weight:700;text-align:center;
+  color:var(--region-color,#1B6B5E)}
+.sched-edit-time:focus,.sched-edit-desc:focus,.sched-edit-aux:focus{outline:none;border-color:var(--region-color,#1B6B5E)}
+.sched-edit-desc{flex:1;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;
+  font-family:inherit;font-size:.84rem;line-height:1.5;resize:none;min-height:38px;overflow:hidden}
+.sched-edit-aux{border:1.5px solid #e2e8f0;border-radius:8px;padding:6px 10px;
+  font-family:inherit;font-size:.79rem;width:100%;box-sizing:border-box}
+.sched-aux-label{font-size:.71rem;color:var(--muted);font-weight:600;margin-top:2px}
+.sched-row-btns{display:flex;gap:4px;flex-shrink:0}
+.sched-row-btn{background:#f7f8fa;border:1.5px solid #e2e8f0;border-radius:7px;
+  width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:#4a5568}
+.sched-row-btn.del{color:#e53e3e;border-color:#fed7d7;background:#fff5f5}
+.sched-add-btn{width:100%;margin-top:8px;padding:10px;border-radius:10px;
+  border:2px dashed #e2e8f0;background:#f7f8fa;font-family:inherit;font-size:.85rem;
+  font-weight:600;color:var(--muted);cursor:pointer}
 
 /* Tips & Food */
 .tip-list{display:flex;flex-direction:column;gap:7px}
@@ -266,7 +288,7 @@ const WMO = {
 // ═══════════════════════════════════════════════
 const DAYS = [
   {
-    n:1, date:'15/07', dow:'שלישי', region:'hanoi',
+    n:1, date:'15/07', dow:'רביעי', region:'hanoi',
     title:'הגעה להנוי',
     wake:null,
     sleep:{name:'Babylon Premium Hotel ★★★★',addr:'הנוי, ויטנאם',phone:'',booking:'חדר זוגי'},
@@ -284,7 +306,7 @@ const DAYS = [
     ],
   },
   {
-    n:2, date:'16/07', dow:'רביעי', region:'hanoi',
+    n:2, date:'16/07', dow:'חמישי', region:'hanoi',
     title:'הנוי — סיור אוכל רחוב',
     wake:{name:'Babylon Premium Hotel ★★★★',addr:'הנוי',phone:'',booking:''},
     sleep:{name:'🚌 אוטובוס לילה לסאפה',addr:'יוצא בשעה 21:30 ≈ 5 שעות נסיעה',phone:'',booking:'כלול'},
@@ -304,7 +326,7 @@ const DAYS = [
     ],
   },
   {
-    n:3, date:'17/07', dow:'חמישי', region:'sapa',
+    n:3, date:'17/07', dow:'שישי', region:'sapa',
     title:'סאפה — פנספן ומפלי המים',
     wake:{name:'🚌 הגעה מהאוטובוס',addr:'סאפה, פרובינציית לאו קאי',phone:'',booking:''},
     sleep:{name:'Azalea Sapa Hotel ★★★★',addr:'סאפה',phone:'',booking:'חדר זוגי'},
@@ -327,7 +349,7 @@ const DAYS = [
     ],
   },
   {
-    n:4, date:'18/07', dow:'שישי', region:'sapa',
+    n:4, date:'18/07', dow:'שבת', region:'sapa',
     title:'טרקינג סאפה → הא ז\'אנג',
     wake:{name:'Azalea Sapa Hotel ★★★★',addr:'סאפה',phone:'',booking:''},
     sleep:{name:'Silk River Hotel ★★★★',addr:'הא ז\'אנג',phone:'',booking:'חדר זוגי'},
@@ -349,7 +371,7 @@ const DAYS = [
     ],
   },
   {
-    n:5, date:'19/07', dow:'שבת', region:'hagiang',
+    n:5, date:'19/07', dow:'ראשון', region:'hagiang',
     title:'לופ הא ז\'אנג — יום ראשון',
     wake:{name:'Silk River Hotel ★★★★',addr:'עיר הא ז\'אנג',phone:'',booking:''},
     sleep:{name:'הומסטיי — Dong Van',addr:'עיירת דונג ואן ההיסטורית',phone:'',booking:'חדר זוגי'},
@@ -373,7 +395,7 @@ const DAYS = [
     ],
   },
   {
-    n:6, date:'20/07', dow:'ראשון', region:'hagiang',
+    n:6, date:'20/07', dow:'שני', region:'hagiang',
     title:'לופ הא ז\'אנג — מא פי לנג',
     wake:{name:'הומסטיי — Dong Van',addr:'דונג ואן',phone:'',booking:''},
     sleep:{name:'הומסטיי — Du Gia Village',addr:'כפר דו ג\'יה',phone:'',booking:'חדר זוגי'},
@@ -395,7 +417,7 @@ const DAYS = [
     logistics:[],
   },
   {
-    n:7, date:'21/07', dow:'שני', region:'hagiang',
+    n:7, date:'21/07', dow:'שלישי', region:'hagiang',
     title:'לופ הא ז\'אנג — חזרה + אוטובוס',
     wake:{name:'הומסטיי — Du Gia Village',addr:'כפר דו ג\'יה',phone:'',booking:''},
     sleep:{name:'🚌 אוטובוס שינה להנוי → טאם קוק',addr:'',phone:'',booking:'כלול'},
@@ -417,7 +439,7 @@ const DAYS = [
     ],
   },
   {
-    n:8, date:'22/07', dow:'שלישי', region:'tamcoc',
+    n:8, date:'22/07', dow:'רביעי', region:'tamcoc',
     title:'טאם קוק — הגעה ומנוחה',
     wake:{name:'🚌 הגעה מהאוטובוס ≈ 02:00',addr:'טאקסי למלון בכוחות עצמכם',phone:'',booking:''},
     sleep:{name:'Lalita Resort ★★★★',addr:'ניה בין, טאם קוק',phone:'',booking:'חדר זוגי'},
@@ -434,7 +456,7 @@ const DAYS = [
     logistics:[],
   },
   {
-    n:9, date:'23/07', dow:'רביעי', region:'tamcoc',
+    n:9, date:'23/07', dow:'חמישי', region:'tamcoc',
     title:'הואה לו — טאם קוק — מגות קייב',
     wake:{name:'Lalita Resort ★★★★',addr:'טאם קוק',phone:'',booking:''},
     sleep:{name:'Lalita Resort ★★★★',addr:'טאם קוק',phone:'',booking:''},
@@ -455,7 +477,7 @@ const DAYS = [
     ],
   },
   {
-    n:10, date:'24/07', dow:'חמישי', region:'halong',
+    n:10, date:'24/07', dow:'שישי', region:'halong',
     title:'הנוי → שייט מפרץ הלונג',
     wake:{name:'Lalita Resort ★★★★',addr:'טאם קוק',phone:'',booking:''},
     sleep:{name:'Erina Cruise / Doris / Velar of the Sea ★★★★★',addr:'מפרץ לאן הה',phone:'',booking:'קומה ראשונה + מרפסת פרטית'},
@@ -479,8 +501,8 @@ const DAYS = [
     ],
   },
   {
-    n:11, date:'25/07', dow:'שישי', region:'hoian',
-    title:'לאן הה → מעיף לדה נאנג → הוי אן',
+    n:11, date:'25/07', dow:'שבת', region:'hoian',
+    title:'לאן הה → הנוי → הוי אן',
     wake:{name:'Erina Cruise ★★★★★',addr:'מפרץ לאן הה',phone:'',booking:''},
     sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:'חדר זוגי'},
     schedule:[
@@ -489,21 +511,21 @@ const DAYS = [
       {t:'07:30-09:00',d:'🚣 Dark & Bright Cave — המערה המפורסמת של לאן הה'},
       {t:'09:30',d:'🍽️ Brunch + צ\'ק-אאוט'},
       {t:'11:00',d:'⛵ Speedboat חזרה לתעלת Tuan Chau'},
-      {t:'11:30',d:'נהג לשדה התעופה Da Nang'},
-      {t:'צהריים',d:'✈️ טיסה Da Nang → Hoi An (כלולה, 20 ק"ג + 7 ק"ג יד)'},
-      {t:'אחה"צ',d:'נהג יאסוף משדה התעופה → מלון הוי אן'},
+      {t:'12:00',d:'🚗 נסיעה של 2.5 שעות לשדה התעופה הנוי נוי באי'},
+      {t:'14:30',d:'✈️ טיסה הנוי → דה נאנג (כ-1.5 שעות, כלולה)'},
+      {t:'16:30',d:'🚗 העברה מהשדה להוי אן (כ-30 דקות)'},
       {t:'ערב',d:'🏮 הכירו את הוי אן — שוק הלילה, פנסים, עיר העתיקה'},
     ],
     about:'הוי אן (Hội An) היא עיר עתיקה שומרת UNESCO — לא השתנתה מאות שנים. רחובות צרים עם בתים צהובים, פנסים צבעוניים, נהר Tu Bon הירוק, ושוק לילה קסום. אחד המקומות היפים ביותר בדרום מזרח אסיה.',
     tips:['העיר העתיקה — כרטיס כניסה: 120,000 VND (5 אטרקציות)','ביולי חם מאוד — 32-35°C, לכו בבוקר ובערב','שכרו אופניים למלון — הוי אן שטוחה ואידיאלית לאופניים'],
     food:['🍜 Cao Lau — אטריות הוי אן (פסטה סמיכה עם חזיר)','🌯 White Rose Dumplings — כופתאות לבנות בצורת פרח','🥐 Bánh Mì Phượng — המפורסמת בעולם, 20,000 VND'],
     logistics:[
-      {l:'טיסה Da Nang לHoi An',v:'כלולה — 85$ לאדם'},
+      {l:'טיסה הנוי → דה נאנג',v:'כלולה — 85$ לאדם'},
       {l:'העברה מהשדה',v:'16$ — כלול'},
     ],
   },
   {
-    n:12, date:'26/07', dow:'שבת', region:'hoian',
+    n:12, date:'26/07', dow:'ראשון', region:'hoian',
     title:'הוי אן — מקדש My Son',
     wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
     sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
@@ -524,7 +546,7 @@ const DAYS = [
     ],
   },
   {
-    n:13, date:'27/07', dow:'ראשון', region:'hoian',
+    n:13, date:'27/07', dow:'שני', region:'hoian',
     title:'הוי אן — יום חופשי',
     wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
     sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
@@ -541,7 +563,7 @@ const DAYS = [
     logistics:[],
   },
   {
-    n:14, date:'28/07', dow:'שני', region:'hoian',
+    n:14, date:'28/07', dow:'שלישי', region:'hoian',
     title:'ג\'יפ → בישול → סירת במבוק',
     wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
     sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
@@ -567,7 +589,7 @@ const DAYS = [
     ],
   },
   {
-    n:15, date:'29/07', dow:'שלישי', region:'hoian',
+    n:15, date:'29/07', dow:'רביעי', region:'hoian',
     title:'הוי אן — יום חופשי אחרון',
     wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
     sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
@@ -582,7 +604,7 @@ const DAYS = [
     logistics:[],
   },
   {
-    n:16, date:'30/07', dow:'רביעי', region:'hoian',
+    n:16, date:'30/07', dow:'חמישי', region:'hoian',
     title:'יום עזיבה — טיסה הביתה',
     wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
     sleep:{name:'✈️ בדרך הביתה',addr:'',phone:'',booking:''},
@@ -599,7 +621,7 @@ const DAYS = [
     ],
   },
   {
-    n:17, date:'31/07', dow:'חמישי', region:'bus',
+    n:17, date:'31/07', dow:'שישי', region:'bus',
     title:'הגעה הביתה 🏠',
     wake:null,
     sleep:null,
@@ -723,7 +745,7 @@ const GENERAL_INFO = [
 // ═══════════════════════════════════════════════
 function todayDayN() {
   const today = new Date();
-  const start = new Date('2025-07-15');
+  const start = new Date('2026-07-15');
   const diff = Math.floor((today - start) / 86400000) + 1;
   return (diff >= 1 && diff <= 17) ? diff : null;
 }
@@ -902,6 +924,63 @@ function usePhotos(tripCode, dayN) {
 }
 
 // ═══════════════════════════════════════════════
+// SCHEDULE HOOK — per-day editable schedule
+// ═══════════════════════════════════════════════
+function useSchedule(tripCode, dayN, baseSchedule) {
+  const [items, setItems] = useState(null); // null = no custom, use base
+  const [schedStatus, setSchedStatus] = useState(null);
+  const saveTimer = useRef(null);
+
+  useEffect(() => {
+    if (!FB_READY || !tripCode) {
+      const c = localStorage.getItem(`vn_sched_${tripCode}_d${dayN}`);
+      setItems(c ? JSON.parse(c) : null);
+      return;
+    }
+    const ref = db.collection('vietnam_trips').doc(tripCode).collection('schedules').doc(`day${dayN}`);
+    const unsub = ref.onSnapshot(
+      snap => setItems(snap.exists ? (snap.data().items || []) : null),
+      err => console.error('Schedule error:', err.code)
+    );
+    return unsub;
+  }, [tripCode, dayN]);
+
+  const saveItems = useCallback((newItems) => {
+    clearTimeout(saveTimer.current);
+    setSchedStatus('saving');
+    saveTimer.current = setTimeout(async () => {
+      try {
+        if (FB_READY && tripCode) {
+          await db.collection('vietnam_trips').doc(tripCode).collection('schedules')
+            .doc(`day${dayN}`).set({items: newItems, updatedAt: new Date().toISOString()});
+        } else {
+          localStorage.setItem(`vn_sched_${tripCode}_d${dayN}`, JSON.stringify(newItems));
+        }
+        setSchedStatus('ok');
+        setTimeout(() => setSchedStatus(null), 2000);
+      } catch(e) { console.error(e); setSchedStatus(null); }
+    }, 700);
+  }, [tripCode, dayN]);
+
+  const initFromBase = useCallback(() => {
+    if (items === null) {
+      const copy = baseSchedule.map(s => ({...s}));
+      setItems(copy);
+      saveItems(copy);
+    }
+  }, [items, baseSchedule, saveItems]);
+
+  return {
+    schedItems: items ?? baseSchedule,
+    hasCustom: items !== null,
+    setSchedItems: setItems,
+    saveItems,
+    initFromBase,
+    schedStatus,
+  };
+}
+
+// ═══════════════════════════════════════════════
 // WEATHER HOOK — Open-Meteo Archive API (free)
 // ═══════════════════════════════════════════════
 function useWeather() {
@@ -910,6 +989,16 @@ function useWeather() {
   });
   const [loading, setLoading] = useState({});
   const fetchedRef = useRef({});
+
+  // Clear stale weather cache if year changed
+  useEffect(() => {
+    if (localStorage.getItem('vn_weather_year') !== '2026') {
+      localStorage.removeItem('vn_weather');
+      localStorage.setItem('vn_weather_year', '2026');
+      setWeatherData({});
+      fetchedRef.current = {};
+    }
+  }, []);
 
   // Mark already-cached regions so we don't re-fetch
   const initDone = useRef(false);
@@ -926,13 +1015,13 @@ function useWeather() {
     setLoading(l => ({...l, [region]: true}));
     try {
       // Use archive API — trip dates are in the past (July 2025)
-      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${coords.lat}&longitude=${coords.lon}&start_date=2025-07-15&end_date=2025-07-31&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&timezone=Asia%2FBangkok`;
+      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${coords.lat}&longitude=${coords.lon}&start_date=2026-07-15&end_date=2026-07-31&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&timezone=Asia%2FBangkok`;
       const res = await fetch(url);
       const json = await res.json();
       const d = json.daily;
       const rw = {};
       d.time.forEach((date, i) => {
-        const n = Math.floor((new Date(date) - new Date('2025-07-15')) / 86400000) + 1;
+        const n = Math.floor((new Date(date) - new Date('2026-07-15')) / 86400000) + 1;
         if (n >= 1 && n <= 17) {
           rw[n] = {
             wcode: d.weather_code[i],
@@ -971,7 +1060,7 @@ function SetupScreen({onReady}) {
     <div className="setup-screen">
       <div className="setup-card">
         <div style={{fontSize:'2.5rem',marginBottom:'8px'}}>🌏</div>
-        <h1>ויטנאם 2025</h1>
+        <h1>ויטנאם 2026</h1>
         <p>הזינו קוד טיול משותף לסנכרון עם בן/בת הזוג. שניכם צריכים להזין אותו קוד.</p>
         <input
           className="setup-input" placeholder="VNTRIP25"
@@ -1002,7 +1091,7 @@ function CalendarView({onDaySelect, fbStatus, onReset, tripCode}) {
       <div className="cal-header">
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
           <div>
-            <h1>🌏 ויטנאם — יולי 2025</h1>
+            <h1>🌏 ויטנאם — יולי 2026</h1>
             <p>15 יולי – 31 יולי · 17 ימים של הרפתקה</p>
           </div>
           <button onClick={onReset} style={{background:'rgba(255,255,255,.15)',border:'none',borderRadius:10,
@@ -1054,6 +1143,8 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
   const [lightbox, setLightbox] = useState(null);
   const saveTimer = useRef(null);
   const {photos, addPhoto, deletePhoto, uploading, setUploading} = usePhotos(tripCode, dayN);
+  const {schedItems, setSchedItems, saveItems: saveSchedItems, initFromBase, schedStatus} = useSchedule(tripCode, dayN, day.schedule);
+  const [schedEdit, setSchedEdit] = useState(false);
 
   useEffect(() => {
     if (fetchRegionWeather) fetchRegionWeather(day.region);
@@ -1186,16 +1277,63 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
           <div className="section-card-header">
             <span className="s-icon">📅</span>
             <h3>לוח שעות</h3>
+            <button className="sched-edit-btn" onClick={() => { if(!schedEdit) initFromBase(); setSchedEdit(m=>!m); }}>
+              {schedEdit ? '✓ סיים' : '✏️'}
+            </button>
           </div>
           <div className="section-card-body">
-            <div className="schedule-list">
-              {day.schedule.map((item, i) => (
-                <div key={i} className="schedule-item">
-                  <span className="sched-time">{item.t}</span>
-                  <span className="sched-text">{item.d}</span>
+            {!schedEdit ? (
+              <div className="schedule-list">
+                {schedItems.map((item,i) => (
+                  <div key={i} className="schedule-item">
+                    <span className="sched-time">{item.t}</span>
+                    <div style={{flex:1}}>
+                      <span className="sched-text">{item.d}</span>
+                      {(item.location||item.contact||item.info) && (
+                        <div className="sched-secondary">
+                          {item.location && <span>📍 {item.location}</span>}
+                          {item.contact && <span>📞 {item.contact}</span>}
+                          {item.info && <span>ℹ️ {item.info}</span>}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>
+                {schedItems.map((item,i) => {
+                  const upd = (f,v) => { const n=[...schedItems]; n[i]={...n[i],[f]:v}; setSchedItems(n); saveSchedItems(n); };
+                  const move = (dir) => { const n=[...schedItems]; const t=n[i]; n[i]=n[i+dir]; n[i+dir]=t; setSchedItems(n); saveSchedItems(n); };
+                  const del = () => { const n=schedItems.filter((_,idx)=>idx!==i); setSchedItems(n); saveSchedItems(n); };
+                  return (
+                    <div key={i} className="sched-edit-item">
+                      <div className="sched-edit-row">
+                        <input className="sched-edit-time" value={item.t||''} onChange={e=>upd('t',e.target.value)} placeholder="שעה" />
+                        <textarea className="sched-edit-desc" value={item.d||''} onChange={e=>upd('d',e.target.value)} placeholder="תיאור פעילות" rows={2} />
+                        <div className="sched-row-btns">
+                          {i>0 && <button className="sched-row-btn" onClick={()=>move(-1)}>▲</button>}
+                          {i<schedItems.length-1 && <button className="sched-row-btn" onClick={()=>move(1)}>▼</button>}
+                          <button className="sched-row-btn del" onClick={del}>✕</button>
+                        </div>
+                      </div>
+                      <div className="sched-aux-label">📍 מיקום</div>
+                      <input className="sched-edit-aux" value={item.location||''} onChange={e=>upd('location',e.target.value)} placeholder="שם מקום, כתובת..." />
+                      <div className="sched-aux-label">ℹ️ מידע נוסף / איש קשר</div>
+                      <input className="sched-edit-aux" value={item.info||''} onChange={e=>upd('info',e.target.value)} placeholder="מחיר, הערה, טלפון..." />
+                    </div>
+                  );
+                })}
+                <button className="sched-add-btn" onClick={() => {
+                  const n=[...schedItems,{t:'',d:'',location:'',info:''}];
+                  setSchedItems(n); saveSchedItems(n);
+                }}>+ הוסף פעילות</button>
+                <div style={{display:'flex',justifyContent:'flex-end',marginTop:6}}>
+                  {schedStatus==='saving' && <span className="sync-status sync-saving">שומר... ☁️</span>}
+                  {schedStatus==='ok' && <span className="sync-status sync-ok">✓ נשמר</span>}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1364,10 +1502,42 @@ function PhrasesView() {
 }
 
 // ═══════════════════════════════════════════════
+// AUTO CURRENCY RATES HOOK
+// ═══════════════════════════════════════════════
+const RATES_CACHE_KEY = 'vn_rates_cache';
+function useCurrencyRates() {
+  const [rates, setRates] = useState(() => {
+    try {
+      const c = JSON.parse(localStorage.getItem(RATES_CACHE_KEY) || 'null');
+      if (c && Date.now() - c.ts < 86400000) return c;
+    } catch {}
+    return {vndPerUsd:25000, ilsPerUsd:3.7, ts:null};
+  });
+  useEffect(() => {
+    try {
+      const c = JSON.parse(localStorage.getItem(RATES_CACHE_KEY) || 'null');
+      if (c && Date.now() - c.ts < 86400000) return;
+    } catch {}
+    fetch('https://api.frankfurter.app/latest?from=USD&to=ILS,VND')
+      .then(r => r.json())
+      .then(j => {
+        const updated = {vndPerUsd: Math.round(j.rates.VND), ilsPerUsd: j.rates.ILS, ts: Date.now()};
+        localStorage.setItem(RATES_CACHE_KEY, JSON.stringify(updated));
+        setRates(updated);
+      })
+      .catch(e => console.warn('Rates fetch failed:', e.message));
+  }, []);
+  return rates;
+}
+
+// ═══════════════════════════════════════════════
 // CURRENCY VIEW
 // ═══════════════════════════════════════════════
 function CurrencyView() {
-  const [rates, setRates] = useState({vndPerUsd: 25000, ilsPerUsd: 3.7});
+  const autoRates = useCurrencyRates();
+  const [manualRates, setManualRates] = useState(null);
+  const rates = manualRates || autoRates;
+  const [draftRates, setDraftRates] = useState(null);
   const [editRates, setEditRates] = useState(false);
   const [ils, setIls] = useState('');
   const [usd, setUsd] = useState('');
@@ -1435,18 +1605,21 @@ function CurrencyView() {
             <div style={{fontWeight:700,marginBottom:'10px'}}>עדכון שערים ידני</div>
             <div className="curr-row">
               <span className="curr-label" style={{fontSize:'.72rem'}}>VND/$</span>
-              <input className="curr-input" type="number" value={rates.vndPerUsd} onChange={e=>setRates(r=>({...r,vndPerUsd:+e.target.value}))} />
+              <input className="curr-input" type="number" value={draftRates?.vndPerUsd ?? rates.vndPerUsd} onChange={e=>setDraftRates(r=>({...(r||rates),vndPerUsd:+e.target.value}))} />
             </div>
             <div className="curr-row">
               <span className="curr-label" style={{fontSize:'.72rem'}}>₪/$</span>
-              <input className="curr-input" type="number" value={rates.ilsPerUsd} onChange={e=>setRates(r=>({...r,ilsPerUsd:+e.target.value}))} />
+              <input className="curr-input" type="number" value={draftRates?.ilsPerUsd ?? rates.ilsPerUsd} onChange={e=>setDraftRates(r=>({...(r||rates),ilsPerUsd:+e.target.value}))} />
             </div>
-            <button onClick={()=>setEditRates(false)} style={{width:'100%',marginTop:'8px',padding:'10px',borderRadius:10,border:'none',background:'#2B6CB0',color:'#fff',fontFamily:'inherit',fontWeight:700,cursor:'pointer'}}>שמור שערים</button>
+            <button onClick={()=>{ if(draftRates) setManualRates({...draftRates, ts:Date.now()}); setEditRates(false); setDraftRates(null); }} style={{width:'100%',marginTop:'8px',padding:'10px',borderRadius:10,border:'none',background:'#2B6CB0',color:'#fff',fontFamily:'inherit',fontWeight:700,cursor:'pointer'}}>שמור שערים</button>
           </div>
         ) : (
           <div className="rate-info">
             שערים: 1$ = {rates.vndPerUsd.toLocaleString()}₫ = ₪{rates.ilsPerUsd}
-            <br/><button className="rate-edit" onClick={()=>setEditRates(true)}>✏️ עדכן שערים</button>
+            {rates.ts && <div style={{fontSize:'.72rem',color:'#a0aec0',marginTop:3}}>עודכן: {new Date(rates.ts).toLocaleDateString('he-IL')}{manualRates ? ' (ידני)' : ' (אוטומטי)'}</div>}
+            <br/>
+            <button className="rate-edit" onClick={()=>{ setDraftRates(null); setEditRates(true); }}>✏️ עדכן שערים</button>
+            {manualRates && <button className="rate-edit" style={{marginRight:6}} onClick={()=>setManualRates(null)}>↺ אוטומטי</button>}
           </div>
         )}
       </div>
