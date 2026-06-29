@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ויטנאם 2025 🌏</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --hanoi:#1B6B5E;--sapa:#6B3FA0;--hagiang:#C05621;
+  --tamcoc:#2F855A;--halong:#2B6CB0;--hoian:#B7791F;--bus:#718096;
+  --bg:#f0f4f8;--card:#fff;--text:#1a202c;--muted:#718096;
+  --nav-h:64px;
+}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;direction:rtl;background:var(--bg);color:var(--text)}
+#root{height:100%;display:flex;flex-direction:column}
+.app{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.screen{flex:1;overflow-y:auto;padding-bottom:calc(var(--nav-h) + 8px)}
+
+/* Bottom Nav */
+.nav{position:fixed;bottom:0;right:0;left:0;height:var(--nav-h);
+  background:#fff;border-top:1px solid #e2e8f0;
+  display:flex;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.08)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;border:none;background:transparent;cursor:pointer;font-family:inherit;
+  color:var(--muted);font-size:.68rem;font-weight:500;transition:color .15s;padding:6px 0}
+.nav-btn.active{color:var(--primary,#1B6B5E)}
+.nav-btn .icon{font-size:1.4rem;line-height:1}
+
+/* Calendar */
+.cal-header{padding:20px 16px 12px;background:linear-gradient(135deg,#1B6B5E,#2d9b87);color:#fff}
+.cal-header h1{font-size:1.4rem;font-weight:700}
+.cal-header p{font-size:.85rem;opacity:.85;margin-top:3px}
+.days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px}
+.day-card{border-radius:14px;overflow:hidden;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);transition:transform .1s,box-shadow .1s;background:#fff}
+.day-card:active{transform:scale(.97)}
+.day-card-top{padding:10px 12px 8px;color:#fff}
+.day-card-top .day-num{font-size:1.5rem;font-weight:800;line-height:1}
+.day-card-top .day-date{font-size:.72rem;opacity:.85;margin-top:1px}
+.day-card-bottom{padding:8px 12px 10px}
+.day-card-bottom .day-title{font-size:.78rem;font-weight:600;color:#1a202c;line-height:1.3}
+.day-card.today .day-card-top::after{content:'היום';position:absolute;top:6px;left:8px;
+  background:rgba(255,255,255,.25);border-radius:8px;padding:2px 7px;font-size:.65rem;font-weight:700}
+.day-card-top{position:relative}
+
+/* Day View */
+.day-view{display:flex;flex-direction:column}
+.day-hero{padding:20px 16px 16px;color:#fff;position:relative}
+.day-hero-back{background:rgba(255,255,255,.2);border:none;border-radius:8px;
+  padding:6px 12px;color:#fff;font-family:inherit;font-size:.9rem;cursor:pointer;margin-bottom:12px;display:inline-flex;align-items:center;gap:5px}
+.day-hero h2{font-size:1.15rem;font-weight:700;margin-top:2px}
+.day-hero .day-meta{font-size:.75rem;opacity:.8;margin-bottom:2px}
+.day-body{padding:12px 14px;display:flex;flex-direction:column;gap:12px}
+
+/* Cards */
+.section-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.section-card-header{display:flex;align-items:center;gap:8px;padding:12px 14px 10px;border-bottom:1px solid #f0f4f8}
+.section-card-header .s-icon{font-size:1.1rem}
+.section-card-header h3{font-size:.95rem;font-weight:700;flex:1}
+.section-card-body{padding:12px 14px}
+.hotel-name{font-size:1rem;font-weight:700;color:#1a202c;margin-bottom:4px}
+.hotel-meta{font-size:.82rem;color:var(--muted);line-height:1.7}
+.hotel-meta a{color:inherit;text-decoration:none}
+.hotel-booking{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:6px;font-size:.78rem;font-weight:600;background:#edf2f7;color:#4a5568}
+
+/* Schedule */
+.schedule-list{display:flex;flex-direction:column;gap:0}
+.schedule-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #f7f8fa;align-items:flex-start}
+.schedule-item:last-child{border:none;padding-bottom:0}
+.sched-time{font-size:.78rem;font-weight:700;color:var(--region-color,#1B6B5E);min-width:60px;padding-top:1px}
+.sched-text{font-size:.85rem;color:#2d3748;line-height:1.5;flex:1}
+
+/* Tips & Food */
+.tip-list{display:flex;flex-direction:column;gap:7px}
+.tip-item{display:flex;gap:8px;align-items:flex-start;font-size:.84rem;line-height:1.5;color:#2d3748}
+.tip-item::before{content:'💡';flex-shrink:0;margin-top:1px}
+.food-item{display:flex;gap:8px;font-size:.84rem;line-height:1.5;padding:5px 0;border-bottom:1px solid #f7f8fa;color:#2d3748}
+.food-item:last-child{border:none}
+
+/* Logistics */
+.log-item{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-bottom:1px solid #f7f8fa}
+.log-item:last-child{border:none;padding-bottom:0}
+.log-label{font-size:.75rem;color:var(--muted);font-weight:600}
+.log-value{font-size:.86rem;color:#2d3748;font-weight:500}
+
+/* Summary */
+.summary-textarea{width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;
+  font-family:inherit;font-size:.88rem;line-height:1.6;color:#2d3748;resize:none;min-height:100px;
+  direction:rtl;transition:border-color .15s}
+.summary-textarea:focus{outline:none;border-color:#4a90d9}
+.summary-hint{font-size:.75rem;color:var(--muted);margin-top:6px;text-align:center}
+.sync-status{font-size:.72rem;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:4px}
+.sync-ok{background:#c6f6d5;color:#22543d}
+.sync-saving{background:#fef3c7;color:#744210}
+
+/* Phrases */
+.phrases-header{padding:18px 16px 12px;background:linear-gradient(135deg,#2B6CB0,#4a90d9);color:#fff}
+.phrases-header h1{font-size:1.3rem;font-weight:700}
+.cat-tab-bar{display:flex;gap:6px;padding:12px 14px 4px;overflow-x:auto;scrollbar-width:none}
+.cat-tab-bar::-webkit-scrollbar{display:none}
+.cat-tab{white-space:nowrap;padding:6px 14px;border-radius:20px;border:1.5px solid #e2e8f0;
+  background:#fff;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+.cat-tab.active{background:#2B6CB0;border-color:#2B6CB0;color:#fff}
+.phrase-list{padding:10px 14px;display:flex;flex-direction:column;gap:8px}
+.phrase-card{background:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.phrase-he{font-size:.92rem;font-weight:700;color:#1a202c;margin-bottom:4px}
+.phrase-vn{font-size:.88rem;color:#2B6CB0;font-weight:600;direction:ltr;text-align:left}
+.phrase-pronounce{font-size:.78rem;color:var(--muted);margin-top:3px;direction:ltr;text-align:left}
+
+/* Currency */
+.curr-header{padding:18px 16px 12px;background:linear-gradient(135deg,#B7791F,#d4930a);color:#fff}
+.curr-body{padding:16px}
+.curr-card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:14px}
+.curr-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.curr-label{font-size:.8rem;font-weight:700;color:var(--muted);width:50px;text-align:center}
+.curr-input{flex:1;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;
+  font-size:1.1rem;font-weight:700;font-family:inherit;text-align:center;transition:border-color .15s}
+.curr-input:focus{outline:none;border-color:#B7791F}
+.curr-result-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f4f8}
+.curr-result-row:last-child{border:none}
+.curr-res-label{font-size:.82rem;color:var(--muted)}
+.curr-res-val{font-size:1.05rem;font-weight:700;color:#2d3748}
+.rate-info{font-size:.78rem;color:var(--muted);text-align:center;margin-top:8px}
+.rate-edit{font-size:.8rem;padding:6px 12px;border-radius:8px;border:1.5px solid #e2e8f0;background:#f7f8fa;cursor:pointer;font-family:inherit}
+
+/* Contacts */
+.contacts-header{padding:18px 16px 12px;background:linear-gradient(135deg,#6B3FA0,#9b59b6);color:#fff}
+.contact-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);margin:0 14px 12px}
+.contact-card-top{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid #f0f4f8}
+.contact-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.contact-name{font-weight:700;font-size:.95rem}
+.contact-role{font-size:.78rem;color:var(--muted);margin-top:2px}
+.contact-links{display:flex;gap:0}
+.contact-link{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:11px;font-size:.82rem;font-weight:600;text-decoration:none;color:#2d3748;
+  border-left:1px solid #f0f4f8;transition:background .15s}
+.contact-link:first-child{border:none}
+.contact-link:active{background:#f7f8fa}
+
+/* Info */
+.info-header{padding:18px 16px 12px;background:linear-gradient(135deg,#2F855A,#48bb78);color:#fff}
+.info-section{margin:12px 14px 0}
+.info-section h3{font-size:.95rem;font-weight:700;color:#1a202c;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.info-item{font-size:.84rem;color:#2d3748;line-height:1.6;padding:5px 0;border-bottom:1px solid #f7f8fa;display:flex;gap:8px;align-items:flex-start}
+.info-item:last-child{border:none}
+.info-bullet{color:var(--muted);flex-shrink:0}
+
+/* Gallery */
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gallery-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer}
+.gallery-add{width:100%;aspect-ratio:1;border-radius:8px;border:2px dashed #e2e8f0;
+  background:#f7f8fa;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-direction:column;gap:4px;color:var(--muted);font-size:.78rem;font-weight:600}
+.gallery-add .add-icon{font-size:1.6rem}
+
+/* Setup screen */
+.setup-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;padding:32px 24px;background:linear-gradient(135deg,#1B6B5E 0%,#2B6CB0 100%)}
+.setup-card{background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:340px;text-align:center}
+.setup-card h1{font-size:1.5rem;font-weight:800;margin-bottom:6px;color:#1a202c}
+.setup-card p{font-size:.88rem;color:var(--muted);margin-bottom:24px;line-height:1.5}
+.setup-input{width:100%;border:2px solid #e2e8f0;border-radius:12px;padding:12px 16px;
+  font-family:inherit;font-size:1.2rem;font-weight:700;text-align:center;letter-spacing:4px;
+  direction:ltr;transition:border-color .15s;margin-bottom:12px}
+.setup-input:focus{outline:none;border-color:#1B6B5E}
+.setup-btn{width:100%;padding:14px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#1B6B5E,#2B6CB0);color:#fff;
+  font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer}
+.setup-hint{font-size:.78rem;color:var(--muted);margin-top:16px}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.lightbox img{max-width:95vw;max-height:80vh;border-radius:10px;object-fit:contain}
+.lightbox-close{position:absolute;top:16px;left:16px;background:rgba(255,255,255,.2);
+  border:none;border-radius:50%;width:40px;height:40px;color:#fff;font-size:1.2rem;cursor:pointer}
+
+/* Utils */
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.73rem;font-weight:700}
+.mt8{margin-top:8px}
+.no-hotel{color:var(--muted);font-size:.85rem;font-style:italic;padding:4px 0}
+
+/* Weather */
+.weather-main{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.weather-big-icon{font-size:2.4rem;line-height:1;flex-shrink:0}
+.weather-tmax{font-size:1.45rem;font-weight:800;color:#1a202c}
+.weather-tmin{font-size:.92rem;color:var(--muted);font-weight:600}
+.weather-wdesc{font-size:.83rem;color:#2d3748;margin-top:2px}
+.weather-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.weather-chip{background:#f0f4f8;border-radius:8px;padding:4px 10px;font-size:.78rem;color:#4a5568;font-weight:600}
+.clothes-header{font-size:.82rem;font-weight:700;color:#2d3748;margin:10px 0 6px;padding-top:10px;border-top:1px solid #f0f4f8}
+.clothes-item{font-size:.82rem;line-height:1.6;color:#2d3748;padding:1px 0}
+.weather-loading{text-align:center;color:var(--muted);font-size:.85rem;padding:10px 0}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const {useState, useEffect, useCallback, useRef} = React;
+
+// ═══════════════════════════════════════════════
+// FIREBASE CONFIG — מלאו את הפרטים שלכם!
+// ═══════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyArlNCZHon55fivZKppaXOjbx7-cW7Asqc",
+  authDomain: "vietnam-trip-f136b.firebaseapp.com",
+  projectId: "vietnam-trip-f136b",
+  storageBucket: "vietnam-trip-f136b.firebasestorage.app",
+  messagingSenderId: "263972173381",
+  appId: "1:263972173381:web:48600ad707f5ea9ff6952c"
+};
+
+let db = null, FB_READY = false;
+try {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  if (!FIREBASE_CONFIG.apiKey.includes('YOUR')) {
+    db = firebase.firestore();
+    FB_READY = true;
+  }
+} catch(e) { console.warn('Firebase error:', e.message); }
+
+// ═══════════════════════════════════════════════
+// REGION CONFIG
+// ═══════════════════════════════════════════════
+const REGIONS = {
+  hanoi:  { color: '#1B6B5E', bg: 'linear-gradient(135deg,#1B6B5E,#2d9b87)', label: 'הנוי', flag: '🌆' },
+  sapa:   { color: '#6B3FA0', bg: 'linear-gradient(135deg,#6B3FA0,#9b59b6)', label: 'סאפה', flag: '⛰️' },
+  hagiang:{ color: '#C05621', bg: 'linear-gradient(135deg,#C05621,#e07b39)', label: 'הא ז\'אנג', flag: '🏔️' },
+  tamcoc: { color: '#2F855A', bg: 'linear-gradient(135deg,#2F855A,#48bb78)', label: 'טאם קוק', flag: '🚣' },
+  halong: { color: '#2B6CB0', bg: 'linear-gradient(135deg,#2B6CB0,#4a90d9)', label: 'מפרץ הלונג', flag: '⛵' },
+  hoian:  { color: '#B7791F', bg: 'linear-gradient(135deg,#B7791F,#d4930a)', label: 'הוי אן', flag: '🏮' },
+  bus:    { color: '#718096', bg: 'linear-gradient(135deg,#718096,#a0aec0)', label: 'בדרך', flag: '🚌' },
+};
+
+// קואורדינטות לכל אזור — עבור API מזג האוויר
+const REGION_COORDS = {
+  hanoi:   {lat:21.0285, lon:105.8542},
+  sapa:    {lat:22.3363, lon:103.8437},
+  hagiang: {lat:22.8234, lon:104.9832},
+  tamcoc:  {lat:20.2513, lon:105.9754},
+  halong:  {lat:20.9101, lon:107.1839},
+  hoian:   {lat:15.8801, lon:108.3380},
+  bus:     {lat:21.0285, lon:105.8542},
+};
+
+// קודי WMO למזג אוויר
+const WMO = {
+  0:{l:'שמיים פתוחים',i:'☀️'}, 1:{l:'בהיר ברוב',i:'🌤️'}, 2:{l:'מעונן חלקית',i:'⛅'},
+  3:{l:'מעונן',i:'☁️'}, 45:{l:'ערפל',i:'🌫️'}, 48:{l:'ערפל',i:'🌫️'},
+  51:{l:'ממטר קל',i:'🌦️'}, 53:{l:'ממטר',i:'🌦️'}, 55:{l:'ממטר כבד',i:'🌧️'},
+  61:{l:'גשם קל',i:'🌧️'}, 63:{l:'גשם',i:'🌧️'}, 65:{l:'גשם כבד',i:'🌧️'},
+  71:{l:'שלג',i:'❄️'}, 73:{l:'שלג',i:'❄️'}, 75:{l:'שלג כבד',i:'❄️'},
+  80:{l:'מטר קצר',i:'🌦️'}, 81:{l:'מטר',i:'🌦️'}, 82:{l:'מטר חזק',i:'🌧️'},
+  95:{l:'סופת ברקים',i:'⛈️'}, 96:{l:'סופה עם ברד',i:'⛈️'}, 99:{l:'סופה חזקה',i:'⛈️'},
+};
+
+// ═══════════════════════════════════════════════
+// TRIP DATA — 17 ימים
+// ═══════════════════════════════════════════════
+const DAYS = [
+  {
+    n:1, date:'15/07', dow:'שלישי', region:'hanoi',
+    title:'הגעה להנוי',
+    wake:null,
+    sleep:{name:'Babylon Premium Hotel ★★★★',addr:'הנוי, ויטנאם',phone:'',booking:'חדר זוגי'},
+    schedule:[
+      {t:'כל היום',d:'טיסה ≡ הגעה להנוי'},
+      {t:'עם הנחיתה',d:'נהג של קים יאסוף אתכם ויעביר למלון ברכב פרטי'},
+      {t:'ערב',d:'מנוחה חופשית — מוזמנים לצאת לסביבת המלון'},
+    ],
+    about:'הנוי, בירת ויטנאם, היא עיר של 1,000 שנה עם ריחות, קולות וטעמים בלתי נשכחים. הרחובות הצרים של העיר העתיקה, האגם, המקדשים ועגלות האוכל ברחוב יוצרים אווירה ייחודית.',
+    tips:['החליפו כסף בבנק או בשדה התעופה — שערים טובים יותר מהרחוב','קנו SIM מקומי בשדה (Viettel / Vietnamobile) — 150,000 VND לחודש','השתמשו ב-Grab (כמו Uber) — הרבה יותר זול ממוניות רגילות','אוכל רחוב בטוח לחלוטין — תחפשו מקומות עם תור מקומיים'],
+    food:['🍜 פו (Phở) — מרק האטריות הלאומי, בקר/עוף','🥖 באן מי (Bánh Mì) — כריך בגט ויטנאמי ב-20,000 VND','☕ קפה ביצה (Cà Phê Trứng) — קרם ביצה מוקצף על קפה, ספציאליטה הנוי'],
+    logistics:[
+      {l:'קים — Kun Travel',v:'+84 979 616 836 (WhatsApp)'},
+      {l:'העברה מהשדה',v:'כלולה — רכב פרטי 4 מושבים, 16$'},
+    ],
+  },
+  {
+    n:2, date:'16/07', dow:'רביעי', region:'hanoi',
+    title:'הנוי — סיור אוכל רחוב',
+    wake:{name:'Babylon Premium Hotel ★★★★',addr:'הנוי',phone:'',booking:''},
+    sleep:{name:'🚌 אוטובוס לילה לסאפה',addr:'יוצא בשעה 21:30 ≈ 5 שעות נסיעה',phone:'',booking:'כלול'},
+    schedule:[
+      {t:'בוקר',d:'ארוחת בוקר במלון'},
+      {t:'11:15',d:'מפגש לסיור אוכל רחוב בהנוי (קבוצה קטנה, עד 6 אנשים)'},
+      {t:'3 שעות',d:'הליכה בשכונות האוכל — פו, באן מי, אטריות, קפה ביצה, מאפים ועוד'},
+      {t:'אחה"צ',d:'זמן חופשי לטיול עצמאי — אגם Hoan Kiem, מקדש Ngoc Son'},
+      {t:'21:30',d:'🚌 אוטובוס לילה VIP לסאפה (שינה על האוטובוס)'},
+    ],
+    about:'הנוי מפורסמת באוכל הרחוב שלה — אחד הטובים בעולם. הסיור ינחה אתכם לדוכנים המסורתיים הנסתרים שמקומיים אוהבים. תנסו לפחות 6-8 מאכלים שונים!',
+    tips:['שדרוג: בקשו מהמדריך להוסיף ביקור בשוק Dong Xuan','טמפרטורה בהנוי ביולי ≈ 33°C עם לחות גבוהה — שתו הרבה מים','העיר העתיקה מחולקת ל"רחובות מקצוע" — רחוב הכסף, רחוב הנייר וכו\''],
+    food:['🥣 בון צ\'ה (Bún Chả) — חזיר צלוי עם אטריות ורוטב (המאכל של אובמה!)','🥞 באן קואון (Bánh Cuốn) — פנקייק אטריות אפוי עם בשר','🍡 אוכל מטוגן ברחוב — דונאטס אורז, ביצי עוף'],
+    logistics:[
+      {l:'מקום מפגש לסיור',v:'41 Luong Van Can St., Hoan Kiem'},
+      {l:'אוטובוס לסאפה',v:'כלול — VIP sleeping bus, 19$ לאדם'},
+    ],
+  },
+  {
+    n:3, date:'17/07', dow:'חמישי', region:'sapa',
+    title:'סאפה — פנספן ומפלי המים',
+    wake:{name:'🚌 הגעה מהאוטובוס',addr:'סאפה, פרובינציית לאו קאי',phone:'',booking:''},
+    sleep:{name:'Azalea Sapa Hotel ★★★★',addr:'סאפה',phone:'',booking:'חדר זוגי'},
+    schedule:[
+      {t:'בוקר מוקדם',d:'הגעה לסאפה — צ\'ק אין במלון + ארוחת בוקר'},
+      {t:'09:00',d:'מדריך מקומי ("מאמה") יאסוף אתכם מהמלון'},
+      {t:'09:30',d:'🚠 רכבל הארוך בעולם — עולים לפסגת הר פנספן (3,143 מ\')'},
+      {t:'11:00',d:'⛰️ תצפית מהר הגבוה ביותר באינדוצ\'ינה — תמונות אפיות'},
+      {t:'13:00',d:'ירידה ברכבל + ארוחת צהריים'},
+      {t:'14:30',d:'💦 מפל Thac Bac (כסף) — מפל מרשים ב-300 מ\''},
+      {t:'15:30',d:'💕 מפל האהבה (Love Waterfall) — עם אגדה רומנטית'},
+      {t:'18:00',d:'חזרה לסאפה + ארוחת ערב עצמאית'},
+    ],
+    about:'סאפה ממוקמת בצפון מערב ויטנאם בגובה 1,500 מ\', מוקפת בטראסות אורז ירוקות ועמקים עוטפי ערפל. שבטי המיעוטים — Hmong שחור, Red Dao — חיים כאן בסגנון חיים עתיק.',
+    tips:['הרכבל עלול להיות עמוס — קנו כרטיסים מוקדם!','קחו ג\'קט — הפסגה קרירה גם בקיץ','בסאפה תמיד כדאי לקנות מוצרי רקמה מהשבטיות — תסחרו באהבה'],
+    food:['🌽 תירס צלוי בדוכנים — 5,000 VND','🍲 לאו קאי — מרק ירקות עם טופו מקומי','🍵 ג\'ינג\'ר טי — כוס תה ביולי, מחמם נפלא'],
+    logistics:[
+      {l:'רכבל פנספן',v:'~700,000 VND לאדם (כלול בסיור)'},
+      {l:'סיור',v:'כלול — מדריך מקומי + נהג'},
+    ],
+  },
+  {
+    n:4, date:'18/07', dow:'שישי', region:'sapa',
+    title:'טרקינג סאפה → הא ז\'אנג',
+    wake:{name:'Azalea Sapa Hotel ★★★★',addr:'סאפה',phone:'',booking:''},
+    sleep:{name:'Silk River Hotel ★★★★',addr:'הא ז\'אנג',phone:'',booking:'חדר זוגי'},
+    schedule:[
+      {t:'09:00',d:'מאמה מגיעה — מתחילים טרקינג 12 ק"מ בעמק Muong Hoa'},
+      {t:'09:30',d:'🚶 טרקינג לכפר Y Linh Ho — שבט Black Hmong'},
+      {t:'11:00',d:'כפר Lao Chai — נוף של טראסות אורז מדהימות'},
+      {t:'12:30',d:'🍽️ ארוחת צהריים בכפר Lao Chai'},
+      {t:'14:00',d:'המשך לכפר Ta Van — שבט Zay'},
+      {t:'15:30',d:'מפל + גשר ראטן (מוסמוס!) — ויו ייחודי'},
+      {t:'16:00',d:'🚐 לימוזינה מסאפה לעיר הא ז\'אנג (≈ 4 שעות)'},
+      {t:'22:30',d:'הגעה לעיר הא ז\'אנג — צ\'ק אין + שינה'},
+    ],
+    about:'הטרקינג בעמק Muong Hoa הוא אחד היפים בדרום מזרח אסיה. שדות האורז המדורגות, הנחלים הצלולים והמפגשים עם בני שבטי המיעוטים יוצרים חוויה מרגשת שלא תשכחו.',
+    tips:['קחו נעלי הליכה ולא כפכפים — הדרכים לחות ומחליקות','קנו מקל הליכה מהמאמה — 10,000 VND ועוזר מאוד','ישנם מקלחות בנקודות המנוחה לאורך הדרך'],
+    food:['🌿 ארוחת כפר עם המאמה — אוכל ביתי של השבט','🫐 אוכלים פרי יחד בדרך — מהפלאי'],
+    logistics:[
+      {l:'לימוזינה להא ז\'אנג',v:'כלולה — 16:00 מסאפה'},
+    ],
+  },
+  {
+    n:5, date:'19/07', dow:'שבת', region:'hagiang',
+    title:'לופ הא ז\'אנג — יום ראשון',
+    wake:{name:'Silk River Hotel ★★★★',addr:'עיר הא ז\'אנג',phone:'',booking:''},
+    sleep:{name:'הומסטיי — Dong Van',addr:'עיירת דונג ואן ההיסטורית',phone:'',booking:'חדר זוגי'},
+    schedule:[
+      {t:'08:00',d:'ארוחת בוקר + עלייה על האופנועים (Easy Riders)'},
+      {t:'09:00',d:'🏔️ מעבר Bac Sum Pass — תצפית ראשונה'},
+      {t:'10:30',d:'שער השמים Quan Ba Heaven Gate — נוף אגדי'},
+      {t:'11:00',d:'⛰️ הרי התאומות (Twin Fairy Mountains) — צורה ייחודית'},
+      {t:'12:00',d:'מעבר Can Ty — בין הרים מרשימים'},
+      {t:'13:00',d:'🍽️ ארוחת צהריים בעיירת Yen Minh'},
+      {t:'14:30',d:'מעבר Tham Ma — נוף מהיפים בוויטנאם'},
+      {t:'16:00',d:'🏰 ארמון מלך ה-Hmong — בית ניל של ה"מלך האחרון"'},
+      {t:'17:30',d:'הגעה לדונג ואן — שיטוט בעיירה העתיקה'},
+      {t:'19:00',d:'ארוחת ערב עצמאית + הליכה בשוק הלילה'},
+    ],
+    about:'לופ הא ז\'אנג הוא אחד ה"סודות" הגדולים של ויטנאם — 3 ימים על אופנועים דרך נופי שיש ואבן גיר מדהימים, כפרי Hmong, מעברי הרים חדים ועמקים ירוקים. מעט תיירים יודעים עליו!',
+    tips:['לבשו קסדה! — אל תתווכחו עם הנהגים על זה','הלופ ביולי יכול להיות גשמי — מעיל רוח חובה','אפשר לקנות מלאכת יד ישירות מהשבטיות — מחירים נמוכים'],
+    food:['🍲 מרק Thắng Cố — מרק בשר סוס מסורתי (אמיצים בלבד 😄)','🍚 אוכל ביתי בהומסטיי — אורז, ירקות, תבשיל'],
+    logistics:[
+      {l:'Easy Riders',v:'מדריכים מקומיים — כלול בחבילה, 169$ לאדם ל-3 ימים'},
+    ],
+  },
+  {
+    n:6, date:'20/07', dow:'ראשון', region:'hagiang',
+    title:'לופ הא ז\'אנג — מא פי לנג',
+    wake:{name:'הומסטיי — Dong Van',addr:'דונג ואן',phone:'',booking:''},
+    sleep:{name:'הומסטיי — Du Gia Village',addr:'כפר דו ג\'יה',phone:'',booking:'חדר זוגי'},
+    schedule:[
+      {t:'08:00',d:'ארוחת בוקר (בשוק הבוקר של דונג ואן אם ראשון)'},
+      {t:'09:00',d:'🏔️ Sky Pass — מעבר ה"שמיים"'},
+      {t:'10:00',d:'⭐ Ma Pi Leng Pass — אחד מ-4 המעברים היפים ביותר בוויטנאם! ≈ 2,000 מ\''},
+      {t:'11:00',d:'תצפית על נהר Nho Que הטורקיז עמוק בתהום'},
+      {t:'12:30',d:'🍽️ ארוחת צהריים בכפר Mau Due'},
+      {t:'14:00',d:'Sa Li Pass — מעבר נוסף עם נוף'},
+      {t:'15:00',d:'תצפית Lung Ho — פנורמה על הרי הסלע'},
+      {t:'16:00',d:'💦 מפל Du Gia — קפיצה לבריכה טבעית!'},
+      {t:'17:30',d:'הגעה לכפר Du Gia — צ\'ק אין בהומסטיי'},
+      {t:'19:00',d:'🍽️ ארוחת ערב עם המשפחה המארחת (כלול)'},
+    ],
+    about:'Ma Pi Leng הוא "מלך המעברים" של ויטנאם — ל"שפתיים הסוס" בשפת ה-Hmong. הדרך חוצה ריצ\'ה מפחיד עם נוף לנהר הטורקיז 800 מ\' מתחתיכם. אחת מחוויות הנסיעה הגדולות באסיה.',
+    tips:['צלמו הרבה ב-Ma Pi Leng — כל פניה מגלה נוף חדש','אל תפספסו את הנהר למטה — ה"Canyon" הויטנאמי','הומסטיי בדו ג\'יה — ישנים עם משפחה ויטנאמית אמיתית, חוויה מיוחדת'],
+    food:['🍳 ארוחת ערב ביתית עם המשפחה המארחת — ירקות, חזיר, אורז, בירה עם קרח','🐠 דגי נהר טריים בדו ג\'יה'],
+    logistics:[],
+  },
+  {
+    n:7, date:'21/07', dow:'שני', region:'hagiang',
+    title:'לופ הא ז\'אנג — חזרה + אוטובוס',
+    wake:{name:'הומסטיי — Du Gia Village',addr:'כפר דו ג\'יה',phone:'',booking:''},
+    sleep:{name:'🚌 אוטובוס שינה להנוי → טאם קוק',addr:'',phone:'',booking:'כלול'},
+    schedule:[
+      {t:'08:00',d:'ארוחת בוקר עם נוף ההרים'},
+      {t:'09:00',d:'שוק Du Gia (בשבת) — אנשים מהשבטים מגיעים'},
+      {t:'10:00',d:'תצפית Duong Thuong — פנורמה מדהימה'},
+      {t:'12:00',d:'🍽️ ארוחת צהריים בעיירת Tam Son'},
+      {t:'14:00',d:'☕ קפה Nui Cam — נקודת תצפית על עיר הא ז\'אנג'},
+      {t:'16:00',d:'סיום הלופ — חזרה לעיר הא ז\'אנג'},
+      {t:'ערב',d:'זמן חופשי — ארוחת ערב עצמאית'},
+      {t:'19:30',d:'🚌 אוטובוס שינה VIP מהא ז\'אנג לטאם קוק'},
+    ],
+    about:'יום שלישי ואחרון של הלופ — פחות דרמטי מהקודמים אבל עדיין יפה. הלופ הא ז\'אנג שכוח שהוא מקורי לחלוטין — כמעט בלי תיירי מערב, הרגשה של גילוי.',
+    tips:['קנו מזכרות ב-Dong Van / Du Gia — מחירים טובים בהרבה מהנוי','השיב מידה לנהגי ה-Easy Riders — הם עושים עבודה קשה'],
+    food:['🍜 אטריות בוקר ברחוב עם המקומיים — 20,000 VND'],
+    logistics:[
+      {l:'אוטובוס לטאם קוק',v:'VIP sleeping bus — 22$ לאדם'},
+    ],
+  },
+  {
+    n:8, date:'22/07', dow:'שלישי', region:'tamcoc',
+    title:'טאם קוק — הגעה ומנוחה',
+    wake:{name:'🚌 הגעה מהאוטובוס ≈ 02:00',addr:'טאקסי למלון בכוחות עצמכם',phone:'',booking:''},
+    sleep:{name:'Lalita Resort ★★★★',addr:'ניה בין, טאם קוק',phone:'',booking:'חדר זוגי'},
+    schedule:[
+      {t:'02:00',d:'הגעה לטאם קוק — טקסי קצר למלון'},
+      {t:'בוקר',d:'ארוחת בוקר + מנוחה'},
+      {t:'אחה"צ',d:'🚶 שיטוט עצמאי סביב המלון ובכפרים'},
+      {t:'אופציה',d:'🧘 Tuyet Tinh Coc — "ממלכת השלג" — מקדש בתוך הר'},
+      {t:'ערב',d:'ארוחת ערב עצמאית ליד הנהר'},
+    ],
+    about:'ניה בין (Ninh Binh) נקראת "הלונג ביי של היבשה" — נהרות שקטים, הרי אבן גיר מרשימים, שדות אורז ומנזרים עתיקים. אזור טבעי שמשחק תפקיד גדול בהיסטוריה הויטנאמית.',
+    tips:['שכרו אופניים מהמלון — הדרך לאורך הנהר מהממת','טאם קוק פחות עמוס תיירים מסאפה ומהלונג — נהנו מהשקט'],
+    food:['🐐 בשר עז — מיוחדות ניה בין','🍚 אוכל ים-נהר — דגים, שרימפס מהנהרות המקומיים'],
+    logistics:[],
+  },
+  {
+    n:9, date:'23/07', dow:'רביעי', region:'tamcoc',
+    title:'הואה לו — טאם קוק — מגות קייב',
+    wake:{name:'Lalita Resort ★★★★',addr:'טאם קוק',phone:'',booking:''},
+    sleep:{name:'Lalita Resort ★★★★',addr:'טאם קוק',phone:'',booking:''},
+    schedule:[
+      {t:'09:00',d:'🏛️ מדריך מגיע — ביקור בהואה לו העתיקה — בירת ויטנאם במאה ה-10'},
+      {t:'09:30',d:'מקדש המלך דין — אדריכלות מהמאה ה-17'},
+      {t:'10:15',d:'🚣 סירת חתירה בטראנג אן Trang An — נהר עם מנהרות טבעיות'},
+      {t:'13:15',d:'🍽️ ארוחת צהריים מקומית'},
+      {t:'14:45',d:'🦅 מגות קייב (Mua Cave) — 500 מדרגות לתצפית הכי יפה בניה בין'},
+      {t:'16:00',d:'📸 תצפית פנורמית על שדות האורז והנהרות'},
+      {t:'17:00',d:'חזרה למלון — ארוחת ערב עצמאית'},
+    ],
+    about:'Trang An הוא אתר מורשת עולמי של אונסק"ו — נסיעה בסירה בין הרים ודרך מנהרות אבן. מגות קייב היא 500 מדרגות תלולות אבל השכר הוא תמונת הנוף הויטנאמי הקלאסית.',
+    tips:['מגות קייב — קחו מים הרבה! 500 מדרגות בחום','לסירה בטראנג אן — כובע ואמצעי שמש חובה','קנו כרטיסים לטראנג אן מוקדם בבוקר (עלולים להיגמר)'],
+    food:['🍤 שרימפס מטוגנים בטביל מקומי','🥬 דעי קואי — ירק מים מטוגן, מיוחדות ניה בין'],
+    logistics:[
+      {l:'סיור',v:'כלול — 45$ לאדם'},
+    ],
+  },
+  {
+    n:10, date:'24/07', dow:'חמישי', region:'halong',
+    title:'הנוי → שייט מפרץ הלונג',
+    wake:{name:'Lalita Resort ★★★★',addr:'טאם קוק',phone:'',booking:''},
+    sleep:{name:'Erina Cruise / Doris / Velar of the Sea ★★★★★',addr:'מפרץ לאן הה',phone:'',booking:'קומה ראשונה + מרפסת פרטית'},
+    schedule:[
+      {t:'08:00-08:30',d:'🚐 אוטובוס מאסף מהמלון → כיוון הנוי → מפרץ הלונג'},
+      {t:'11:45',d:'הגעה ל-Lounge — Welcome drink + check-in מהיר'},
+      {t:'12:30',d:'⛵ מהיר מתעלת Tuan Chau למשט (speedboat)'},
+      {t:'13:00',d:'☀️ יציאה לשייט — קידוש ייחודי על הסיפון'},
+      {t:'13:15',d:'🍽️ ארוחת צהריים מסודרת תוך כדי שייט'},
+      {t:'15:00',d:'🚣 קיאקינג / שחייה במפרץ'},
+      {t:'17:30-18:30',d:'שיבה לאוניה + cocktails שקיעה על הסיפון'},
+      {t:'19:00',d:'🔥 BBQ ארוחת ערב על הסיפון (אם 30+ אורחים)'},
+      {t:'20:30',d:'דיג דיונונים (אופציונלי)'},
+    ],
+    about:'מפרץ הלונג — פלא טבע ומורשת עולמי — אלפי עמודי שיש צצים מהמים הטורקיזים. שייט בו הוא חוויה אחרת מכל נסיעה ימית שעשיתם. הוסיפו שקיעה על הסיפון ותבינו מדוע.',
+    tips:['הביאו בגד ים — יש קיאקינג ושחייה בים','שמשה חזקה מאוד על המים — קרם 50+ חובה','אל תפספסו את הדיג בלילה — חוויה ייחודית'],
+    food:['🦞 פירות ים טריים — שרימפס, קלמארי, דגי ים','🍜 ארוחות מסודרות על האוניה — כלולות','🍻 בירה ויטנאמית Hanoi Beer על הסיפון'],
+    logistics:[
+      {l:'Cruise — Erina/Doris/Velar',v:'Lan Ha Bay cruise — 159$ לאדם'},
+      {l:'לימוזין מניה בין להלונג',v:'14$ לאדם — כלול'},
+    ],
+  },
+  {
+    n:11, date:'25/07', dow:'שישי', region:'hoian',
+    title:'לאן הה → מעיף לדה נאנג → הוי אן',
+    wake:{name:'Erina Cruise ★★★★★',addr:'מפרץ לאן הה',phone:'',booking:''},
+    sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:'חדר זוגי'},
+    schedule:[
+      {t:'06:00',d:'☀️ מתעוררים — תרגיל בוקר על הסיפון'},
+      {t:'06:30',d:'🍳 ארוחת בוקר קלה'},
+      {t:'07:30-09:00',d:'🚣 Dark & Bright Cave — המערה המפורסמת של לאן הה'},
+      {t:'09:30',d:'🍽️ Brunch + צ\'ק-אאוט'},
+      {t:'11:00',d:'⛵ Speedboat חזרה לתעלת Tuan Chau'},
+      {t:'11:30',d:'נהג לשדה התעופה Da Nang'},
+      {t:'צהריים',d:'✈️ טיסה Da Nang → Hoi An (כלולה, 20 ק"ג + 7 ק"ג יד)'},
+      {t:'אחה"צ',d:'נהג יאסוף משדה התעופה → מלון הוי אן'},
+      {t:'ערב',d:'🏮 הכירו את הוי אן — שוק הלילה, פנסים, עיר העתיקה'},
+    ],
+    about:'הוי אן (Hội An) היא עיר עתיקה שומרת UNESCO — לא השתנתה מאות שנים. רחובות צרים עם בתים צהובים, פנסים צבעוניים, נהר Tu Bon הירוק, ושוק לילה קסום. אחד המקומות היפים ביותר בדרום מזרח אסיה.',
+    tips:['העיר העתיקה — כרטיס כניסה: 120,000 VND (5 אטרקציות)','ביולי חם מאוד — 32-35°C, לכו בבוקר ובערב','שכרו אופניים למלון — הוי אן שטוחה ואידיאלית לאופניים'],
+    food:['🍜 Cao Lau — אטריות הוי אן (פסטה סמיכה עם חזיר)','🌯 White Rose Dumplings — כופתאות לבנות בצורת פרח','🥐 Bánh Mì Phượng — המפורסמת בעולם, 20,000 VND'],
+    logistics:[
+      {l:'טיסה Da Nang לHoi An',v:'כלולה — 85$ לאדם'},
+      {l:'העברה מהשדה',v:'16$ — כלול'},
+    ],
+  },
+  {
+    n:12, date:'26/07', dow:'שבת', region:'hoian',
+    title:'הוי אן — מקדש My Son',
+    wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    schedule:[
+      {t:'07:30-08:00',d:'🚐 מדריך ונהג מגיעים → יציאה ל-My Son'},
+      {t:'09:00',d:'🏛️ הגעה ל-My Son — מתחם מקדשי הצ\'אם העתיקים'},
+      {t:'09:00-11:00',d:'סיור במקדשים — 70+ מגדלי לבנה מהמאה ה-7 עד 14'},
+      {t:'11:00-12:30',d:'🍽️ ארוחת צהריים בבית מקומי — אוכל מסורתי'},
+      {t:'12:30',d:'🚤 סירה מנועית על נהר Thu Bon בחזרה להוי אן'},
+      {t:'14:00',d:'חזרה למלון — זמן חופשי'},
+      {t:'ערב',d:'שיטוט בעיר העתיקה — קניות + אוכל'},
+    ],
+    about:'My Son הוא אתר יונסקו — עיר המקדשים הקדושה של הממלכה הצ\'אמפה שלטה באזור לאלף שנים. הלבנים הייחודיות בנויות ללא מלט עם סוד שמדענים עוד לא פיצחו.',
+    tips:['My Son חם מאוד — לכו מוקדם ועם כובע','כרטיס כניסה: 150,000 VND','הסיור חצי יום — אפשר לנוח אחה"צ ולכות לעיר בערב'],
+    food:['🍲 אוכל Cham מסורתי — בשר עם עשבי תיבול','🌺 Hoi An rice paper rolls — קיפול ידני בסדנת בוקר'],
+    logistics:[
+      {l:'סיור My Son',v:'כלול — 39$ לאדם, קבוצה קטנה'},
+    ],
+  },
+  {
+    n:13, date:'27/07', dow:'ראשון', region:'hoian',
+    title:'הוי אן — יום חופשי',
+    wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    schedule:[
+      {t:'בוקר',d:'☀️ ארוחת בוקר במלון — זמן חופשי'},
+      {t:'אופציה',d:'🛕 ביקור בעיר העתיקה — מקדשים, בתי קפה, חנויות'},
+      {t:'אופציה',d:'🚲 אופניים לחוף An Bang Beach — 5 ק"מ מהמלון'},
+      {t:'אופציה',d:'✂️ הזמינו בגדים תפורים אצל חייטי הוי אן (24 שעות!)'},
+      {t:'ערב',d:'🏮 פסטיבל הפנסים — בליל ירח מלא (בדקו תאריך!)'},
+    ],
+    about:'הוי אן עיר שאפשר לאבד בה ימים שלמים. חייטי הוי אן מפורסמים — יכולים לתפור כל דבר ב-24 שעות. חוף An Bang נחשב לאחד הטובים בווייטנאם.',
+    tips:['הזמינו בגדים ביום הראשון בהוי אן — יהיו מוכנים עד הגיע היום האחרון','פנסים: שילחו פנס על הנהר בלילה ירח מלא (27-28/7)','An Bang Beach — יש מסעדות נהדרות ישר על החוף'],
+    food:['🍦 Hoi An Wonton — כופתאות פריכות מטוגנות','🥗 Fresh Spring Rolls — גלילות אורז טריות מהמסעדות','🥐 Bánh Mì Phượng — כורכים מחדש'],
+    logistics:[],
+  },
+  {
+    n:14, date:'28/07', dow:'שני', region:'hoian',
+    title:'ג\'יפ → בישול → סירת במבוק',
+    wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    schedule:[
+      {t:'07:30',d:'🚙 ג\'יפ מגיע — יוצאים לשדות הכפריים'},
+      {t:'08:00',d:'חוות חקלאית מקומית — ירקות, אורז, בעלי חיים'},
+      {t:'09:00',d:'🧵 מקצועות מסורתיים — רקמה, יין אורז, גילוף עץ'},
+      {t:'10:30',d:'ארוחה ביתית אצל משפחה ויטנאמית — אוכל אמיתי!'},
+      {t:'12:30',d:'חזרה לעיר'},
+      {t:'14:30',d:'🚗 מדריך מגיע ← שוק מקומי'},
+      {t:'15:30',d:'🛶 סירת במבוק עגולה בנהר + יער הקוקוסים'},
+      {t:'16:00',d:'🦀 דיג סרטנים סגולים בבריכות'},
+      {t:'16:30',d:'🍳 סדנת בישול — מכינים מה שדגנו'},
+      {t:'17:30',d:'🍽️ אוכלים מה שבישלנו!'},
+      {t:'19:00',d:'חזרה למלון'},
+    ],
+    about:'יום מהעשירים בתכנית — סיור ג\'יפ בשדות, בישול מסורתי וסירת במבוק. הסירות העגולות הן ייחודיות לאזור הוי אן — עגולות כי מסתחררות בנחישות וגורמות לצחקות!',
+    tips:['הביאו בגדים שלא אכפת לכם להכתים בסיור הג\'יפ','לאחר הבישול — אל תאכלו ארוחה גדולה לפני!'],
+    food:['🥗 White Rose, Cao Lau, Fresh Rolls — כל הקלאסיקות','🦀 סרטן סגול מבושל באופן מסורתי'],
+    logistics:[
+      {l:'סיור ג\'יפ',v:'כלול — 62$ לאדם'},
+      {l:'שיעור בישול + סירה',v:'כלול — 29$ לאדם'},
+    ],
+  },
+  {
+    n:15, date:'29/07', dow:'שלישי', region:'hoian',
+    title:'הוי אן — יום חופשי אחרון',
+    wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    sleep:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    schedule:[
+      {t:'בוקר',d:'☀️ ארוחת בוקר + מנוחה בבריכת המלון'},
+      {t:'אחה"צ',d:'🛍️ קניות אחרונות — מזכרות, בגדים תפורים, קפה מקומי'},
+      {t:'ערב',d:'🌃 ארוחת ערב מיוחדת — תהנו מהלילה האחרון בהוי אן'},
+    ],
+    about:'היום האחרון בהוי אן — השתמשו בו לאסוף זכרונות ומזכרות. בגדים שהזמנתם מוכנים, מסעדות אחרונות, תמונות אחרונות עם הפנסים.',
+    tips:['אספו את הבגדים מהחייטים!','קנו קפה Weasel / חזיר ים (פאלם קופי) — מתנה יוקרתית מויטנאם','שמרו כסף מזומן לנמל התעופה'],
+    food:['🍜 ארוחת ערב מיוחדת — Morning Glory Restaurant (מפורסם בהוי אן)','🍦 גלידה לוטוס — ספציאליטה הוי אן'],
+    logistics:[],
+  },
+  {
+    n:16, date:'30/07', dow:'רביעי', region:'hoian',
+    title:'יום עזיבה — טיסה הביתה',
+    wake:{name:'CozyAn Boutique Hotel & Spa ★★★★',addr:'הוי אן',phone:'',booking:''},
+    sleep:{name:'✈️ בדרך הביתה',addr:'',phone:'',booking:''},
+    schedule:[
+      {t:'בוקר',d:'ארוחת בוקר אחרונה'},
+      {t:'לפי שעת הטיסה',d:'🚗 נהג מוביל לשדה התעופה דה נאנג'},
+      {t:'שדה התעופה',d:'✈️ טיסה חזרה הביתה'},
+    ],
+    about:'ב-30 יום חווינו הנוי, סאפה, לופ הא ז\'אנג, טאם קוק, מפרץ הלונג והוי אן — ויטנאם מהצפון לדרום. מקווים שנסחב ציוד פחות וזכרונות יותר. 🌏',
+    tips:['הגיעו לשדה 2.5 שעות לפני — Da Nang יכול להיות עמוס','פתיחת כבודה — 20 ק"ג + 7 יד לפי חבילה'],
+    food:['☕ ארוחת בוקר אחרונה במלון — תיהנו!'],
+    logistics:[
+      {l:'העברה לשדה',v:'כלולה — 16$'},
+    ],
+  },
+  {
+    n:17, date:'31/07', dow:'חמישי', region:'bus',
+    title:'הגעה הביתה 🏠',
+    wake:null,
+    sleep:null,
+    schedule:[
+      {t:'כל היום',d:'🛬 נחיתה + בית + פיתוח תמונות + שיתוף סיפורים'},
+    ],
+    about:'הרפתקה של 17 יום בויטנאם הסתיימה. מהנוי ועד הוי אן — עברתם הרים, ים, נהרות, מקדשים, שבטים ומאכלים מדהימים. ברוכים השבים! 🎉',
+    tips:['העלו תמונות לענן בהקדם', 'כתבו ביקורת לקים — הוא מגיע!', 'תכננו את הטיול הבא... 😄'],
+    food:[],
+    logistics:[
+      {l:'קים — Kun Travel',v:'+84 979 616 836 — השאירו ביקורת בגוגל!'},
+    ],
+  },
+];
+
+// ═══════════════════════════════════════════════
+// VIETNAMESE PHRASES
+// ═══════════════════════════════════════════════
+const PHRASES_DATA = {
+  בסיסי: [
+    {he:'שלום / היי',vn:'Xin chào',pr:'סין צ\'או'},
+    {he:'תודה',vn:'Cảm ơn',pr:'קאם אן'},
+    {he:'סליחה',vn:'Xin lỗi',pr:'סין לוי'},
+    {he:'כן / לא',vn:'Vâng / Không',pr:'ואנג / חוונג'},
+    {he:'כמה זה עולה?',vn:'Cái này bao nhiêu tiền?',pr:'קאי ניי בָּאו ניאו טיין?'},
+    {he:'זה יקר מדי!',vn:'Đắt quá!',pr:'דאט קוּאה!'},
+    {he:'הנחה!',vn:'Giảm giá đi!',pr:'זאם ז\'ה דִי!'},
+  ],
+  מסעדה: [
+    {he:'תפריט בבקשה',vn:'Menu cho tôi xem',pr:'מֶנוּ צ\'ו טוֹיִ סֶם'},
+    {he:'אני רוצה...',vn:'Cho tôi...',pr:'צ\'ו טוֹיִ...'},
+    {he:'ללא בשר חזיר',vn:'Không có thịt heo',pr:'חוונג קוֹ טִית הֶאו'},
+    {he:'חריף מדי',vn:'Cay quá',pr:'קַיי קוּאָה'},
+    {he:'מעולה! טעים!',vn:'Ngon lắm!',pr:'נגוֹן לַאם!'},
+    {he:'חשבון בבקשה',vn:'Tính tiền',pr:'טִינ טיֵן'},
+    {he:'מים (בקבוק)',vn:'Nước suối',pr:'נוּאֶק סוּאֶיי'},
+    {he:'בירה',vn:'Bia',pr:'ביָּה'},
+  ],
+  תחבורה: [
+    {he:'לאן האוטובוס לוויטנאם?',vn:'Xe đến ... ở đâu?',pr:'סֶה דֶן... אֶ דַאו?'},
+    {he:'אני רוצה ללכת ל...',vn:'Tôi muốn đi đến...',pr:'טוֹיִ מוּאוֹן דִי דֶן...'},
+    {he:'עצרו כאן',vn:'Dừng lại đây',pr:'זוּנג לַאיי דַיי'},
+    {he:'כמה זה עולה ל...?',vn:'Đi đến ... bao nhiêu?',pr:'דִי דֶן... בָּאו ניאו?'},
+    {he:'תזמין Grab / טקסי',vn:'Gọi Grab / taxi',pr:'גוֹיִ גְרֵאב / טַקסִי'},
+  ],
+  חירום: [
+    {he:'עזרה!',vn:'Cứu tôi với!',pr:'קוּ טוֹיִ ווֹיִ!'},
+    {he:'חלוש / חולה',vn:'Tôi bị ốm',pr:'טוֹיִ בִי אוֹם'},
+    {he:'צריך רופא',vn:'Tôi cần bác sĩ',pr:'טוֹיִ קַאן בַּאק סִי'},
+    {he:'קראו אמבולנס',vn:'Gọi xe cứu thương',pr:'גוֹיִ סֶה קוּ טוּאנג'},
+    {he:'משטרה',vn:'Cảnh sát',pr:'קַאנג סַאת'},
+    {he:'אבדתי',vn:'Tôi bị lạc đường',pr:'טוֹיִ בִי לַאק דוּאנג'},
+  ],
+  קניות: [
+    {he:'מה זה?',vn:'Cái này là gì?',pr:'קַאיי ניי לָּה זִי?'},
+    {he:'האם יש...?',vn:'Có ... không?',pr:'קוֹ... חוונג?'},
+    {he:'גודל קטן / גדול',vn:'Nhỏ / Lớn',pr:'נ\'וֹ / לוֹן'},
+    {he:'צבע אחר',vn:'Màu khác',pr:'מַאו חַאק'},
+    {he:'אני רק מסתכל',vn:'Tôi chỉ xem thôi',pr:'טוֹיִ צ\'יי סֶם טוֹיי'},
+  ],
+};
+
+// ═══════════════════════════════════════════════
+// GENERAL INFO
+// ═══════════════════════════════════════════════
+const GENERAL_INFO = [
+  {
+    title:'💰 כסף ותשלום',
+    items:[
+      'מטבע: דונג ויטנאמי (VND) — כ-23,000 VND = 1$',
+      'כספומטים נפוצים — משכו 3-5 מיליון VND בפעם',
+      'מקומות רבים לא מקבלים כרטיסי אשראי — קיחו מזומן',
+      'הימנעו מהחלפה ברחוב — לכו לבנק',
+      'טיפ: 10-15% במסעדות בינוניות, לא חובה ברחוב',
+    ]
+  },
+  {
+    title:'📱 תקשורת',
+    items:[
+      'SIM מקומי: Viettel / Vietnamobile — 150,000 VND לחודש',
+      'WiFi במלונות בדרך כלל מהיר ואמין',
+      'Grab = Uber/Wolt של ויטנאם — חובה להתקין!',
+      'Google Maps עובד מעולה (הורידו אופליין)',
+      'WhatsApp פועל — קים זמין שם',
+    ]
+  },
+  {
+    title:'👗 תרבות ולבוש',
+    items:[
+      'בביקור מקדשים: כתפיים וברכיים מכוסות',
+      'הסירו נעלים לפני כניסה לבית פרטי / מקדש',
+      'אל תגעו בראש של ילדים — לא מנומס',
+      'צלמו תמיד עם רשות — השבטים עשויים לא לרצות',
+      'מקצת ויכוח על מחיר = נורמה ובא-בא. אל תתנצלו',
+    ]
+  },
+  {
+    title:'🌡️ אקלים ביולי',
+    items:[
+      'הצפון (הנוי, סאפה): 30-33°C, לחות גבוהה, גשמים',
+      'הא ז\'אנג: יכול להיות גשמי — קחו פונצ\'ו',
+      'המרכז (הוי אן): 32-36°C, עונת גשמים — קצרים',
+      'שמשה 50+ ביולי — חשוב מאוד',
+      'בסאפה לילה יכול להיות קריר — ג\'קט קל',
+    ]
+  },
+  {
+    title:'🏥 בריאות',
+    items:[
+      'שתו מים בקבוק בלבד — לא מהברז',
+      'קרח במסעדות טוב — מיוצר ממים מסוננים',
+      'קחו: Imodium, קרם שמש, חרקים, אנטיסטמין',
+      'ביטוח בריאות — ודאו כיסוי לפני הנסיעה',
+      'בית חולים פרטי בהנוי: Vinmec (אנגלית)',
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function todayDayN() {
+  const today = new Date();
+  const start = new Date('2025-07-15');
+  const diff = Math.floor((today - start) / 86400000) + 1;
+  return (diff >= 1 && diff <= 17) ? diff : null;
+}
+
+function getColor(region) { return REGIONS[region]?.color || '#718096'; }
+function getBg(region) { return REGIONS[region]?.bg || 'linear-gradient(135deg,#718096,#a0aec0)'; }
+
+// כתובות מלונות + ניווט גוגל מאפס
+const HOTEL_ADDRESSES = {
+  'Babylon Premium Hotel':  {addr:'35 Bat Su St., Hoan Kiem, Hanoi', q:'Babylon Premium Hotel 35 Bat Su Hanoi Vietnam'},
+  'Azalea Sapa Hotel':      {addr:'Sa Pa Town, Lao Cai Province',     q:'Azalea Sapa Hotel Sa Pa Vietnam'},
+  'Silk River Hotel':       {addr:'99 Nguyen Trai, Ha Giang City',    q:'Silk River Hotel Ha Giang Vietnam'},
+  'Dong Van':               {addr:'Dong Van Old Quarter, Ha Giang',   q:'Dong Van Old Quarter Ha Giang Vietnam'},
+  'Du Gia Village':         {addr:'Du Gia Village, Bac Me, Ha Giang', q:'Du Gia Village Ha Giang Vietnam'},
+  'Lalita Resort':          {addr:'Ninh Hai, Hoa Lu, Ninh Binh',      q:'Lalita Resort Tam Coc Ninh Binh Vietnam'},
+  'Erina Cruise':           {addr:'Tuan Chau Marina, Ha Long City',   q:'Tuan Chau Harbor Ha Long Vietnam'},
+  'Doris':                  {addr:'Tuan Chau Marina, Ha Long City',   q:'Tuan Chau Harbor Ha Long Vietnam'},
+  'Velar of the Sea':       {addr:'Tuan Chau Marina, Ha Long City',   q:'Tuan Chau Harbor Ha Long Vietnam'},
+  'CozyAn Boutique Hotel':  {addr:'2 Tran Hung Dao St., Hoi An',      q:'CozyAn Boutique Hotel Hoi An Vietnam'},
+};
+function hotelLookup(name) {
+  for (const [k, v] of Object.entries(HOTEL_ADDRESSES)) {
+    if (name.includes(k)) return v;
+  }
+  return null;
+}
+function hotelAddr(name, addr) {
+  return hotelLookup(name)?.addr || addr || '';
+}
+function hotelMapsUrl(name, addr) {
+  const info = hotelLookup(name);
+  const q = info?.q || `${name.replace(/[★🚌✈️]/g,'').trim()}, ${addr || ''}, Vietnam`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+}
+
+function getClothingTips(weather, day) {
+  const tips = [];
+  const {tmax, precip, wcode, wind} = weather;
+  const txt = [...day.schedule.map(s=>s.d), ...(day.tips||[])].join(' ');
+  const has = ws => ws.some(w => txt.includes(w));
+
+  const isTrekking = has(['טרקינג','הליכה','מעבר','אופנוע','לופ','טיול רגלי']);
+  const isBoat     = has(['שייט','ספינה','סירה','קיאק','הלונג','סיפון','שיט']);
+  const isTemple   = has(['מקדש','ארמון','מנזר']);
+  const isMountain = ['sapa','hagiang'].includes(day.region);
+  const rainCodes  = [51,53,55,61,63,65,80,81,82,95,96,99];
+  const isRain     = precip > 5 || rainCodes.includes(wcode);
+  const isHeavy    = precip > 20 || [65,82,95,96,99].includes(wcode);
+
+  if      (tmax >= 35) tips.push('🌡️ חום קיצוני — בגדים מנדפי זיעה, צבעים בהירים בלבד');
+  else if (tmax >= 32) tips.push('☀️ חם ולח — כותנה קלה ורפויה, לא סינתטי');
+  else if (tmax >= 27) tips.push('🌤️ חם ונעים — בגדים קלים, שרוול קצר');
+  else                 tips.push('🧥 נעים — קחו ג\'קט קל לערב');
+
+  if (isHeavy)    tips.push('🌧️ גשם כבד צפוי — פונצ\'ו / מעיל גשם חובה!');
+  else if(isRain) tips.push('🌦️ יתכן גשם — קחו מטרייה קומפקטית');
+
+  if (!isHeavy)  tips.push('🌞 קרם שמש SPF 50+ — מרחו מחדש כל שעתיים');
+  if (isTrekking) tips.push('👟 נעלי הליכה עם אחיזה — הדרכים לחות ומחליקות');
+  if (isBoat)     tips.push('👒 כובע רחב שוליים — השמש על הסיפון חזקה מאוד');
+  if (isTemple)   tips.push('👗 כתפיים + ברכיים מכוסות — חובה למקדשים ואתרים');
+  if (isMountain) tips.push('🧥 ג\'קט לפסגות — טמפ\' יורדת 6-8 מעלות בגובה');
+  if (wind > 30)  tips.push('💨 רוח חזקה — היזהרו עם כובעים וחפצים קלים');
+
+  return tips;
+}
+
+// ═══════════════════════════════════════════════
+// HOOKS
+// ═══════════════════════════════════════════════
+function useSyncedData(tripCode) {
+  const [summaries, setSummaries] = useState({});
+  const [syncStatus, setSyncStatus] = useState({});
+
+  useEffect(() => {
+    if (!FB_READY || !tripCode) return;
+    const ref = db.collection('vietnam_trips').doc(tripCode).collection('data');
+    const unsub = ref.onSnapshot(snap => {
+      const data = {};
+      snap.forEach(doc => { data[doc.id] = doc.data(); });
+      setSummaries(data);
+    });
+    return unsub;
+  }, [tripCode]);
+
+  const saveSummary = useCallback(async (dayId, text) => {
+    if (!tripCode) return;
+    setSyncStatus(s => ({...s, [dayId]: 'saving'}));
+    if (FB_READY) {
+      await db.collection('vietnam_trips').doc(tripCode).collection('data').doc(`day${dayId}`).set({summary: text, updatedAt: new Date().toISOString()}, {merge: true});
+    } else {
+      const cached = JSON.parse(localStorage.getItem('vn_summaries') || '{}');
+      cached[dayId] = text;
+      localStorage.setItem('vn_summaries', JSON.stringify(cached));
+    }
+    setSyncStatus(s => ({...s, [dayId]: 'ok'}));
+    setTimeout(() => setSyncStatus(s => ({...s, [dayId]: null})), 2000);
+  }, [tripCode]);
+
+  const localSummaries = JSON.parse(localStorage.getItem('vn_summaries') || '{}');
+  const merged = {};
+  DAYS.forEach(d => {
+    merged[d.n] = summaries[`day${d.n}`]?.summary || localSummaries[d.n] || '';
+  });
+
+  return { summaries: merged, saveSummary, syncStatus };
+}
+
+// ═══════════════════════════════════════════════
+// PHOTO HOOK — compress + Firestore sync
+// ═══════════════════════════════════════════════
+function compressImage(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1200;
+        let {width: w, height: h} = img;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else       { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function usePhotos(tripCode, dayN) {
+  const [photos, setPhotos] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    if (!FB_READY || !tripCode) return;
+    const ref = db.collection('vietnam_trips').doc(tripCode)
+      .collection('photos').where('dayN', '==', dayN);
+    const unsub = ref.onSnapshot(snap => {
+      const arr = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      arr.sort((a, b) => (a.uploadedAt || '').localeCompare(b.uploadedAt || ''));
+      setPhotos(arr);
+    });
+    return unsub;
+  }, [tripCode, dayN]);
+
+  const addPhoto = useCallback(async (base64url) => {
+    if (FB_READY && tripCode) {
+      await db.collection('vietnam_trips').doc(tripCode)
+        .collection('photos').add({dayN, url: base64url, uploadedAt: new Date().toISOString()});
+    } else {
+      setPhotos(p => [...p, {id: Date.now().toString(), url: base64url}]);
+    }
+  }, [tripCode, dayN]);
+
+  const deletePhoto = useCallback(async (id) => {
+    if (FB_READY && tripCode) {
+      await db.collection('vietnam_trips').doc(tripCode)
+        .collection('photos').doc(id).delete();
+    } else {
+      setPhotos(p => p.filter(ph => ph.id !== id));
+    }
+  }, [tripCode, dayN]);
+
+  return {photos, addPhoto, deletePhoto, uploading, setUploading};
+}
+
+// ═══════════════════════════════════════════════
+// WEATHER HOOK — Open-Meteo Archive API (free)
+// ═══════════════════════════════════════════════
+function useWeather() {
+  const [weatherData, setWeatherData] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('vn_weather') || '{}'); } catch { return {}; }
+  });
+  const [loading, setLoading] = useState({});
+  const fetchedRef = useRef({});
+
+  // Mark already-cached regions so we don't re-fetch
+  const initDone = useRef(false);
+  if (!initDone.current) {
+    initDone.current = true;
+    Object.keys(weatherData).forEach(r => { fetchedRef.current[r] = true; });
+  }
+
+  const fetchRegionWeather = useCallback(async (region) => {
+    if (fetchedRef.current[region]) return;
+    fetchedRef.current[region] = true;
+    const coords = REGION_COORDS[region];
+    if (!coords) return;
+    setLoading(l => ({...l, [region]: true}));
+    try {
+      // Use archive API — trip dates are in the past (July 2025)
+      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${coords.lat}&longitude=${coords.lon}&start_date=2025-07-15&end_date=2025-07-31&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&timezone=Asia%2FBangkok`;
+      const res = await fetch(url);
+      const json = await res.json();
+      const d = json.daily;
+      const rw = {};
+      d.time.forEach((date, i) => {
+        const n = Math.floor((new Date(date) - new Date('2025-07-15')) / 86400000) + 1;
+        if (n >= 1 && n <= 17) {
+          rw[n] = {
+            wcode: d.weather_code[i],
+            tmax: Math.round(d.temperature_2m_max[i]),
+            tmin: Math.round(d.temperature_2m_min[i]),
+            precip: Math.round(d.precipitation_sum[i] * 10) / 10,
+            wind: Math.round(d.windspeed_10m_max[i]),
+          };
+        }
+      });
+      setWeatherData(prev => {
+        const updated = {...prev, [region]: rw};
+        localStorage.setItem('vn_weather', JSON.stringify(updated));
+        return updated;
+      });
+    } catch(e) {
+      console.warn('Weather fetch failed:', region, e.message);
+      fetchedRef.current[region] = false; // allow retry
+    } finally {
+      setLoading(l => ({...l, [region]: false}));
+    }
+  }, []);
+
+  const getWeatherForDay = (dayN, region) => weatherData[region]?.[dayN] || null;
+
+  return { fetchRegionWeather, getWeatherForDay, weatherLoading: loading };
+}
+
+// ═══════════════════════════════════════════════
+// SETUP SCREEN
+// ═══════════════════════════════════════════════
+function SetupScreen({onReady}) {
+  const [code, setCode] = useState('');
+  const defaultCode = 'VNTRIP25';
+  return (
+    <div className="setup-screen">
+      <div className="setup-card">
+        <div style={{fontSize:'2.5rem',marginBottom:'8px'}}>🌏</div>
+        <h1>ויטנאם 2025</h1>
+        <p>הזינו קוד טיול משותף לסנכרון עם בן/בת הזוג. שניכם צריכים להזין אותו קוד.</p>
+        <input
+          className="setup-input" placeholder="VNTRIP25"
+          value={code} maxLength={12}
+          onChange={e => setCode(e.target.value.toUpperCase())}
+          onKeyDown={e => e.key === 'Enter' && onReady(code || defaultCode)}
+        />
+        <button className="setup-btn" onClick={() => onReady(code || defaultCode)}>
+          🚀 בואו נסע!
+        </button>
+        <div className="setup-hint">
+          {FB_READY ? '☁️ Firebase מחובר — יסונכרן עם הטלפון השני' : '📴 Firebase לא מוגדר — עובד מקומית בלבד'}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// CALENDAR VIEW
+// ═══════════════════════════════════════════════
+function CalendarView({onDaySelect, fbStatus, onReset, tripCode}) {
+  const todayN = todayDayN();
+  const statusIcon = fbStatus === 'ok' ? '☁️' : fbStatus === 'error' ? '⚠️' : '⏳';
+  const statusText = fbStatus === 'ok' ? 'מחובר' : fbStatus === 'error' ? 'לא מחובר' : '...';
+  return (
+    <div className="screen">
+      <div className="cal-header">
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+          <div>
+            <h1>🌏 ויטנאם — יולי 2025</h1>
+            <p>15 יולי – 31 יולי · 17 ימים של הרפתקה</p>
+          </div>
+          <button onClick={onReset} style={{background:'rgba(255,255,255,.15)',border:'none',borderRadius:10,
+            padding:'6px 10px',color:'#fff',fontSize:'.72rem',cursor:'pointer',textAlign:'center',lineHeight:1.4,marginTop:2}}>
+            <div style={{fontSize:'1rem'}}>{statusIcon}</div>
+            <div>{statusText}</div>
+          </button>
+        </div>
+        {fbStatus === 'error' && (
+          <div style={{marginTop:8,background:'rgba(255,80,80,.25)',borderRadius:8,padding:'6px 10px',fontSize:'.75rem'}}>
+            Firebase לא מחובר — פתח קונסול (F12) לפרטים
+          </div>
+        )}
+      </div>
+      <div className="days-grid">
+        {DAYS.map(day => {
+          const region = REGIONS[day.region] || REGIONS.bus;
+          const isToday = day.n === todayN;
+          return (
+            <div key={day.n} className={`day-card${isToday?' today':''}`} onClick={() => onDaySelect(day.n)}>
+              <div className="day-card-top" style={{background: region.bg}}>
+                {isToday && <span style={{position:'absolute',top:5,left:6,background:'rgba(255,255,255,.3)',borderRadius:8,padding:'1px 6px',fontSize:'.62rem',fontWeight:700}}>היום</span>}
+                <div className="day-num">{day.n}</div>
+                <div className="day-date">{day.date} {region.flag}</div>
+              </div>
+              <div className="day-card-bottom">
+                <div className="day-title">{day.title}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// DAY VIEW
+// ═══════════════════════════════════════════════
+function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, getWeatherForDay, fetchRegionWeather, weatherLoading}) {
+  const day = DAYS[dayN - 1];
+  if (!day) return null;
+  const color = getColor(day.region);
+  const bg = getBg(day.region);
+  const [summary, setSummary] = useState(summaries[dayN] || '');
+  const [lightbox, setLightbox] = useState(null);
+  const saveTimer = useRef(null);
+  const {photos, addPhoto, deletePhoto, uploading, setUploading} = usePhotos(tripCode, dayN);
+
+  useEffect(() => {
+    if (fetchRegionWeather) fetchRegionWeather(day.region);
+  }, [day.region]);
+  const weatherForDay = getWeatherForDay ? getWeatherForDay(dayN, day.region) : null;
+  const isWeatherLoading = weatherLoading ? weatherLoading[day.region] : false;
+
+  useEffect(() => { setSummary(summaries[dayN] || ''); }, [summaries, dayN]);
+
+  // Photo upload — multiple files, compressed
+  const handlePhotoUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    e.target.value = '';
+    setUploading(true);
+    for (const file of files) {
+      try {
+        const compressed = await compressImage(file);
+        await addPhoto(compressed);
+      } catch(err) { console.warn('Photo upload error:', err); }
+    }
+    setUploading(false);
+  };
+
+  const handleDeletePhoto = async (id) => {
+    if (!window.confirm('למחוק את התמונה?')) return;
+    await deletePhoto(id);
+  };
+
+  const onSummaryChange = (text) => {
+    setSummary(text);
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => saveSummary(dayN, text), 1200);
+  };
+
+  const status = syncStatus[dayN];
+
+  return (
+    <div className="screen">
+      {lightbox && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
+          <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
+          <img src={lightbox} alt="" />
+        </div>
+      )}
+
+      {/* Hero */}
+      <div className="day-hero" style={{background: bg}}>
+        <button className="day-hero-back" onClick={onBack}>← ימים</button>
+        <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'4px'}}>
+          <span style={{fontSize:'1.3rem'}}>{REGIONS[day.region]?.flag}</span>
+          <span style={{fontSize:'.8rem',background:'rgba(255,255,255,.2)',padding:'2px 10px',borderRadius:12,fontWeight:600}}>{REGIONS[day.region]?.label}</span>
+        </div>
+        <div className="day-meta">יום {day.n} · {day.date} · {day.dow}</div>
+        <h2>{day.title}</h2>
+      </div>
+
+      <div className="day-body" style={{'--region-color': color}}>
+
+        {/* Weather */}
+        {weatherForDay ? (
+          <div className="section-card">
+            <div className="section-card-header">
+              <span className="s-icon">{WMO[weatherForDay.wcode]?.i || '🌡️'}</span>
+              <h3>מזג האוויר · {day.date}</h3>
+            </div>
+            <div className="section-card-body">
+              <div className="weather-main">
+                <span className="weather-big-icon">{WMO[weatherForDay.wcode]?.i || '🌡️'}</span>
+                <div>
+                  <div>
+                    <span className="weather-tmax">{weatherForDay.tmax}°</span>
+                    <span className="weather-tmin"> / {weatherForDay.tmin}°C</span>
+                  </div>
+                  <div className="weather-wdesc">{WMO[weatherForDay.wcode]?.l || ''}</div>
+                </div>
+              </div>
+              <div className="weather-chips">
+                <span className="weather-chip">🌧️ {weatherForDay.precip} מ"מ</span>
+                <span className="weather-chip">💨 {weatherForDay.wind} קמ"ש</span>
+              </div>
+              <div className="clothes-header">👗 מה ללבוש היום:</div>
+              <div>
+                {getClothingTips(weatherForDay, day).map((tip, i) => (
+                  <div key={i} className="clothes-item">{tip}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : isWeatherLoading ? (
+          <div className="section-card">
+            <div className="section-card-header"><span className="s-icon">🌤️</span><h3>מזג האוויר</h3></div>
+            <div className="section-card-body"><div className="weather-loading">טוען נתוני מזג אוויר מהאינטרנט... 🌐</div></div>
+          </div>
+        ) : null}
+
+        {/* Wake up */}
+        {day.wake ? (
+          <div className="section-card">
+            <div className="section-card-header">
+              <span className="s-icon">🌅</span>
+              <h3>מתעוררים ב</h3>
+            </div>
+            <div className="section-card-body">
+              <div className="hotel-name">{day.wake.name}</div>
+              <div className="hotel-meta">
+                {(() => {
+                  const isBus = day.wake.name.includes('🚌') || day.wake.name.includes('✈️');
+                  const addr = hotelAddr(day.wake.name, day.wake.addr);
+                  return !isBus ? (
+                    <div>📍 <a href={hotelMapsUrl(day.wake.name, day.wake.addr)} target="_blank" rel="noopener noreferrer" style={{color:'#2B6CB0',fontWeight:600,textDecoration:'underline'}}>
+                      {addr || 'ניווט במפות'}
+                    </a></div>
+                  ) : addr ? <div>📍 {addr}</div> : null;
+                })()}
+                {day.wake.phone && <div>📞 <a href={`tel:${day.wake.phone}`}>{day.wake.phone}</a></div>}
+                {day.wake.booking && <span className="hotel-booking">📋 {day.wake.booking}</span>}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="section-card">
+            <div className="section-card-header"><span className="s-icon">🌅</span><h3>מתעוררים ב</h3></div>
+            <div className="section-card-body"><div className="no-hotel">יום ראשון — ישנים בטיסה / בבית</div></div>
+          </div>
+        )}
+
+        {/* Schedule */}
+        <div className="section-card">
+          <div className="section-card-header">
+            <span className="s-icon">📅</span>
+            <h3>לוח שעות</h3>
+          </div>
+          <div className="section-card-body">
+            <div className="schedule-list">
+              {day.schedule.map((item, i) => (
+                <div key={i} className="schedule-item">
+                  <span className="sched-time">{item.t}</span>
+                  <span className="sched-text">{item.d}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Sleep */}
+        {day.sleep ? (
+          <div className="section-card">
+            <div className="section-card-header">
+              <span className="s-icon">🌙</span>
+              <h3>ישנים ב</h3>
+            </div>
+            <div className="section-card-body">
+              <div className="hotel-name">{day.sleep.name}</div>
+              <div className="hotel-meta">
+                {(() => {
+                  const isBus = day.sleep.name.includes('🚌') || day.sleep.name.includes('✈️');
+                  const addr = hotelAddr(day.sleep.name, day.sleep.addr);
+                  return !isBus ? (
+                    <div>📍 <a href={hotelMapsUrl(day.sleep.name, day.sleep.addr)} target="_blank" rel="noopener noreferrer" style={{color:'#2B6CB0',fontWeight:600,textDecoration:'underline'}}>
+                      {addr || 'ניווט במפות'}
+                    </a></div>
+                  ) : addr ? <div>📍 {addr}</div> : null;
+                })()}
+                {day.sleep.phone && <div>📞 <a href={`tel:${day.sleep.phone}`}>{day.sleep.phone}</a></div>}
+                {day.sleep.booking && <span className="hotel-booking">📋 {day.sleep.booking}</span>}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="section-card">
+            <div className="section-card-header"><span className="s-icon">🌙</span><h3>ישנים ב</h3></div>
+            <div className="section-card-body"><div className="no-hotel">הגעתם הביתה! 🏠</div></div>
+          </div>
+        )}
+
+        {/* About */}
+        {day.about && (
+          <div className="section-card">
+            <div className="section-card-header"><span className="s-icon">🗺️</span><h3>על המקום</h3></div>
+            <div className="section-card-body">
+              <p style={{fontSize:'.88rem',lineHeight:1.7,color:'#2d3748'}}>{day.about}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Tips */}
+        {day.tips && day.tips.length > 0 && (
+          <div className="section-card">
+            <div className="section-card-header"><span className="s-icon">✨</span><h3>טיפים חשובים</h3></div>
+            <div className="section-card-body">
+              <div className="tip-list">
+                {day.tips.map((t, i) => <div key={i} className="tip-item"><span></span>{t}</div>)}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Food */}
+        {day.food && day.food.length > 0 && (
+          <div className="section-card">
+            <div className="section-card-header"><span className="s-icon">🍜</span><h3>מה לאכול</h3></div>
+            <div className="section-card-body">
+              {day.food.map((f, i) => <div key={i} className="food-item">{f}</div>)}
+            </div>
+          </div>
+        )}
+
+        {/* Logistics */}
+        {day.logistics && day.logistics.length > 0 && (
+          <div className="section-card">
+            <div className="section-card-header"><span className="s-icon">🚗</span><h3>לוגיסטיקה</h3></div>
+            <div className="section-card-body">
+              {day.logistics.map((l, i) => (
+                <div key={i} className="log-item">
+                  <span className="log-label">{l.l}</span>
+                  <span className="log-value">{l.v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Gallery */}
+        <div className="section-card">
+          <div className="section-card-header"><span className="s-icon">📷</span><h3>גלרייה — יום {day.n}</h3></div>
+          <div className="section-card-body">
+            <div className="gallery-grid">
+              {photos.map((p) => (
+                <div key={p.id} style={{position:'relative'}}>
+                  <img className="gallery-img" src={p.url} alt="" onClick={() => setLightbox(p.url)} />
+                  <button
+                    onClick={() => handleDeletePhoto(p.id)}
+                    style={{position:'absolute',top:4,right:4,background:'rgba(0,0,0,.65)',border:'none',
+                      borderRadius:'50%',width:22,height:22,color:'#fff',fontSize:'.75rem',
+                      cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',lineHeight:1}}>
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <label className="gallery-add" style={{opacity: uploading ? .5 : 1}}>
+                <span className="add-icon">{uploading ? '⏳' : '📸'}</span>
+                <span>{uploading ? 'מעלה...' : 'הוסף תמונות'}</span>
+                <input type="file" accept="image/*" multiple style={{display:'none'}} onChange={handlePhotoUpload} disabled={uploading} />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Daily Summary */}
+        <div className="section-card">
+          <div className="section-card-header"><span className="s-icon">📝</span><h3>סיכום יומי</h3></div>
+          <div className="section-card-body">
+            <textarea
+              className="summary-textarea"
+              placeholder="כתבו ביחד את הזכרונות של היום — מה היה מדהים, מה היה מאתגר, איזה רגע לא תשכחו..."
+              value={summary}
+              onChange={e => onSummaryChange(e.target.value)}
+            />
+            <div className="summary-hint">
+              {status === 'saving' && <span className="sync-status sync-saving">שומר... ☁️</span>}
+              {status === 'ok' && <span className="sync-status sync-ok">✓ נשמר</span>}
+              {!status && summary && <span style={{fontSize:'.72rem',color:'#a0aec0'}}>✎ ערכו ביחד — מסתנכרן אוטומטית</span>}
+              {!summary && <span style={{fontSize:'.72rem',color:'#a0aec0'}}>הסיכום מסתנכרן בין שני הטלפונים</span>}
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div style={{display:'flex',gap:'10px',marginTop:'4px'}}>
+          {dayN > 1 && <button onClick={() => onBack(dayN - 1)} style={{flex:1,padding:'12px',borderRadius:12,border:'1.5px solid #e2e8f0',background:'#fff',cursor:'pointer',fontFamily:'inherit',fontWeight:600,fontSize:'.9rem'}}>← יום {dayN-1}</button>}
+          {dayN < 17 && <button onClick={() => onBack(dayN + 1)} style={{flex:1,padding:'12px',borderRadius:12,border:'none',background:bg,color:'#fff',cursor:'pointer',fontFamily:'inherit',fontWeight:700,fontSize:'.9rem'}}>יום {dayN+1} →</button>}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// PHRASES VIEW
+// ═══════════════════════════════════════════════
+function PhrasesView() {
+  const cats = Object.keys(PHRASES_DATA);
+  const [cat, setCat] = useState(cats[0]);
+  return (
+    <div className="screen">
+      <div className="phrases-header">
+        <h1>🗣️ ויטנאמית לדרך</h1>
+        <p style={{fontSize:'.82rem',opacity:.85,marginTop:'4px'}}>ביטויים חיוניים עם הגייה בעברית</p>
+      </div>
+      <div className="cat-tab-bar">
+        {cats.map(c => (
+          <button key={c} className={`cat-tab${cat===c?' active':''}`} onClick={() => setCat(c)}>{c}</button>
+        ))}
+      </div>
+      <div className="phrase-list">
+        {PHRASES_DATA[cat].map((p, i) => (
+          <div key={i} className="phrase-card">
+            <div className="phrase-he">{p.he}</div>
+            <div className="phrase-vn">{p.vn}</div>
+            <div className="phrase-pronounce">🔊 {p.pr}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// CURRENCY VIEW
+// ═══════════════════════════════════════════════
+function CurrencyView() {
+  const [rates, setRates] = useState({vndPerUsd: 25000, ilsPerUsd: 3.7});
+  const [editRates, setEditRates] = useState(false);
+  const [ils, setIls] = useState('');
+  const [usd, setUsd] = useState('');
+  const [vnd, setVnd] = useState('');
+
+  const convert = (from, val) => {
+    const n = parseFloat(val);
+    if (isNaN(n)) { setIls(''); setUsd(''); setVnd(''); return; }
+    if (from === 'ils') {
+      const u = n / rates.ilsPerUsd;
+      setUsd(u.toFixed(2)); setVnd((u * rates.vndPerUsd).toFixed(0));
+    } else if (from === 'usd') {
+      const i = n * rates.ilsPerUsd;
+      setIls(i.toFixed(2)); setVnd((n * rates.vndPerUsd).toFixed(0));
+    } else {
+      const u = n / rates.vndPerUsd;
+      setIls((u * rates.ilsPerUsd).toFixed(2)); setUsd(u.toFixed(3));
+    }
+  };
+
+  const fmtVnd = (n) => {
+    const num = parseInt(n);
+    if (isNaN(num)) return '—';
+    return num.toLocaleString('he-IL') + ' ₫';
+  };
+
+  return (
+    <div className="screen">
+      <div className="curr-header">
+        <h1>💱 מחשבון מטבע</h1>
+        <p style={{fontSize:'.82rem',opacity:.85,marginTop:'4px'}}>שקל / דולר / דונג ויטנאמי</p>
+      </div>
+      <div className="curr-body">
+        <div className="curr-card">
+          {[
+            {label:'₪ שקל',key:'ils',val:ils,set:v=>{setIls(v);convert('ils',v)}},
+            {label:'$ דולר',key:'usd',val:usd,set:v=>{setUsd(v);convert('usd',v)}},
+            {label:'₫ דונג',key:'vnd',val:vnd,set:v=>{setVnd(v);convert('vnd',v)}},
+          ].map(({label,key,val,set}) => (
+            <div key={key} className="curr-row">
+              <span className="curr-label" style={{fontSize:'.75rem',fontWeight:700}}>{label}</span>
+              <input className="curr-input" type="number" value={val} onChange={e=>set(e.target.value)} placeholder="0" />
+            </div>
+          ))}
+        </div>
+
+        <div className="curr-card">
+          <div style={{fontWeight:700,fontSize:'.9rem',marginBottom:'10px',color:'#1a202c'}}>📊 המרה מהירה — כמה זה ב-₫?</div>
+          {[
+            {label:'כוס קפה (25,000₫)',usd:1,ils:3.7},
+            {label:'ארוחת רחוב (50,000₫)',usd:2,ils:7.4},
+            {label:'מסעדה בינונית (150,000₫)',usd:6,ils:22.2},
+            {label:'טקסי קצר (100,000₫)',usd:4,ils:14.8},
+            {label:'בקבוק בירה (30,000₫)',usd:1.2,ils:4.4},
+          ].map((r,i) => (
+            <div key={i} className="curr-result-row">
+              <span className="curr-res-label">{r.label}</span>
+              <span className="curr-res-val">≈ ₪{r.ils}</span>
+            </div>
+          ))}
+        </div>
+
+        {editRates ? (
+          <div className="curr-card">
+            <div style={{fontWeight:700,marginBottom:'10px'}}>עדכון שערים ידני</div>
+            <div className="curr-row">
+              <span className="curr-label" style={{fontSize:'.72rem'}}>VND/$</span>
+              <input className="curr-input" type="number" value={rates.vndPerUsd} onChange={e=>setRates(r=>({...r,vndPerUsd:+e.target.value}))} />
+            </div>
+            <div className="curr-row">
+              <span className="curr-label" style={{fontSize:'.72rem'}}>₪/$</span>
+              <input className="curr-input" type="number" value={rates.ilsPerUsd} onChange={e=>setRates(r=>({...r,ilsPerUsd:+e.target.value}))} />
+            </div>
+            <button onClick={()=>setEditRates(false)} style={{width:'100%',marginTop:'8px',padding:'10px',borderRadius:10,border:'none',background:'#2B6CB0',color:'#fff',fontFamily:'inherit',fontWeight:700,cursor:'pointer'}}>שמור שערים</button>
+          </div>
+        ) : (
+          <div className="rate-info">
+            שערים: 1$ = {rates.vndPerUsd.toLocaleString()}₫ = ₪{rates.ilsPerUsd}
+            <br/><button className="rate-edit" onClick={()=>setEditRates(true)}>✏️ עדכן שערים</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// CONTACTS VIEW
+// ═══════════════════════════════════════════════
+function ContactsView() {
+  const contacts = [
+    {
+      name:'קים — Kun Travel',role:'סוכן הטיול שלנו',avatar:'🧑‍💼',bg:'#1B6B5E',
+      links:[
+        {icon:'📞',label:'חייג',href:'tel:+84979616836'},
+        {icon:'💬',label:'WhatsApp',href:'https://wa.me/84979616836'},
+      ]
+    },
+    {
+      name:'שגרירות ישראל בוויטנאם',role:'הנוי — חירום קונסולרי',avatar:'🇮🇱',bg:'#2B6CB0',
+      links:[
+        {icon:'📞',label:'שגרירות',href:'tel:+842438431600'},
+        {icon:'🆘',label:'חירום',href:'tel:+84903202264'},
+      ]
+    },
+    {
+      name:'חירום ויטנאם',role:'שירותי חירום מקומיים',avatar:'🚨',bg:'#C05621',
+      links:[
+        {icon:'🚔',label:'משטרה 113',href:'tel:113'},
+        {icon:'🚑',label:'אמבולנס 115',href:'tel:115'},
+        {icon:'🚒',label:'כיבוי 114',href:'tel:114'},
+      ]
+    },
+    {
+      name:'Vinmec International Hospital',role:'בית חולים פרטי בהנוי (אנגלית)',avatar:'🏥',bg:'#2F855A',
+      links:[
+        {icon:'📞',label:'חייג',href:'tel:+842439740000'},
+      ]
+    },
+  ];
+
+  return (
+    <div className="screen">
+      <div className="contacts-header">
+        <h1>📞 אנשי קשר</h1>
+        <p style={{fontSize:'.82rem',opacity:.85,marginTop:'4px'}}>קים, שגרירות, חירום</p>
+      </div>
+      <div style={{paddingTop:'14px'}}>
+        {contacts.map((c,i) => (
+          <div key={i} className="contact-card">
+            <div className="contact-card-top">
+              <div className="contact-avatar" style={{background:c.bg+'22',color:c.bg,fontSize:'1.3rem'}}>{c.avatar}</div>
+              <div>
+                <div className="contact-name">{c.name}</div>
+                <div className="contact-role">{c.role}</div>
+              </div>
+            </div>
+            <div className="contact-links">
+              {c.links.map((l,j) => (
+                <a key={j} className="contact-link" href={l.href} style={{borderRight:j>0?'1px solid #f0f4f8':'none',borderLeft:'none'}}>
+                  <span>{l.icon}</span>{l.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// INFO VIEW
+// ═══════════════════════════════════════════════
+function InfoView() {
+  const [open, setOpen] = useState(0);
+  return (
+    <div className="screen">
+      <div className="info-header">
+        <h1>📖 מידע כללי</h1>
+        <p style={{fontSize:'.82rem',opacity:.85,marginTop:'4px'}}>כסף, אקלים, תרבות, בריאות</p>
+      </div>
+      <div style={{padding:'12px 14px',display:'flex',flexDirection:'column',gap:'10px'}}>
+        {GENERAL_INFO.map((section, i) => (
+          <div key={i} className="section-card" style={{overflow:'visible'}}>
+            <div className="section-card-header" style={{cursor:'pointer'}} onClick={()=>setOpen(open===i?-1:i)}>
+              <h3>{section.title}</h3>
+              <span style={{color:'#a0aec0',marginRight:'auto'}}>{open===i?'▲':'▼'}</span>
+            </div>
+            {open === i && (
+              <div className="section-card-body">
+                {section.items.map((item,j) => (
+                  <div key={j} className="info-item">
+                    <span className="info-bullet">•</span>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// BOTTOM NAV
+// ═══════════════════════════════════════════════
+const NAV_ITEMS = [
+  {id:'cal', icon:'📅', label:'ימים'},
+  {id:'phrases', icon:'🗣️', label:'ויטנאמית'},
+  {id:'currency', icon:'💱', label:'מטבע'},
+  {id:'contacts', icon:'📞', label:'אנשי קשר'},
+  {id:'info', icon:'📖', label:'מידע'},
+];
+
+function BottomNav({view, onNav}) {
+  return (
+    <nav className="nav">
+      {NAV_ITEMS.map(item => (
+        <button key={item.id} className={`nav-btn${view===item.id?' active':''}`}
+          onClick={() => onNav(item.id)}
+          style={view===item.id?{'--primary': '#1B6B5E'}:{}}>
+          <span className="icon">{item.icon}</span>
+          {item.label}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+// ═══════════════════════════════════════════════
+// ROOT APP
+// ═══════════════════════════════════════════════
+function App() {
+  const [tripCode, setTripCode] = useState(() => localStorage.getItem('vn_trip_code') || '');
+  const [view, setView] = useState('cal');
+  const [dayN, setDayN] = useState(null);
+  const [fbStatus, setFbStatus] = useState('checking'); // 'checking' | 'ok' | 'error'
+  const { summaries, saveSummary, syncStatus } = useSyncedData(tripCode);
+  const { fetchRegionWeather, getWeatherForDay, weatherLoading } = useWeather();
+
+  // Test actual Firestore connectivity on mount
+  useEffect(() => {
+    if (!FB_READY) { setFbStatus('error'); return; }
+    db.collection('_ping').doc('test').set({t: Date.now()})
+      .then(() => setFbStatus('ok'))
+      .catch(e => { console.error('Firestore error:', e); setFbStatus('error'); });
+  }, []);
+
+  const handleReset = () => {
+    if (!window.confirm('לנתק ולחזור למסך הכניסה?')) return;
+    localStorage.removeItem('vn_trip_code');
+    setTripCode('');
+  };
+
+  if (!tripCode) {
+    return <SetupScreen onReady={(code) => {
+      localStorage.setItem('vn_trip_code', code);
+      setTripCode(code);
+    }} />;
+  }
+
+  const handleDaySelect = (n) => {
+    setDayN(n);
+    setView('day');
+  };
+
+  const handleNav = (v) => {
+    setView(v);
+    setDayN(null);
+  };
+
+  const handleBack = (nextDayN) => {
+    if (typeof nextDayN === 'number') {
+      setDayN(nextDayN);
+    } else {
+      setView('cal');
+      setDayN(null);
+    }
+  };
+
+  return (
+    <div className="app">
+      {view === 'cal' && <CalendarView onDaySelect={handleDaySelect} fbStatus={fbStatus} onReset={handleReset} tripCode={tripCode} />}
+      {view === 'day' && dayN && <DayView dayN={dayN} onBack={handleBack} tripCode={tripCode} summaries={summaries} saveSummary={saveSummary} syncStatus={syncStatus} getWeatherForDay={getWeatherForDay} fetchRegionWeather={fetchRegionWeather} weatherLoading={weatherLoading} />}
+      {view === 'phrases' && <PhrasesView />}
+      {view === 'currency' && <CurrencyView />}
+      {view === 'contacts' && <ContactsView />}
+      {view === 'info' && <InfoView />}
+      {view !== 'day' && <BottomNav view={view} onNav={handleNav} />}
+      {view === 'day' && (
+        <nav className="nav" style={{borderTop:'1px solid rgba(255,255,255,.2)',background:'rgba(255,255,255,.95)'}}>
+          <button className="nav-btn" onClick={() => setView('cal')} style={{flex:'none',padding:'0 20px'}}>← חזרה</button>
+          <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'.85rem',fontWeight:700,color:'#4a5568'}}>יום {dayN} — {DAYS[dayN-1]?.title}</div>
+        </nav>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
