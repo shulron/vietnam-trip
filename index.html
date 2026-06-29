@@ -801,11 +801,14 @@ function useSyncedData(tripCode) {
   useEffect(() => {
     if (!FB_READY || !tripCode) return;
     const ref = db.collection('vietnam_trips').doc(tripCode).collection('data');
-    const unsub = ref.onSnapshot(snap => {
-      const data = {};
-      snap.forEach(doc => { data[doc.id] = doc.data(); });
-      setSummaries(data);
-    });
+    const unsub = ref.onSnapshot(
+      snap => {
+        const data = {};
+        snap.forEach(doc => { data[doc.id] = doc.data(); });
+        setSummaries(data);
+      },
+      err => console.error('Summaries sync error:', err.code, err.message)
+    );
     return unsub;
   }, [tripCode]);
 
@@ -866,11 +869,14 @@ function usePhotos(tripCode, dayN) {
     if (!FB_READY || !tripCode) return;
     const ref = db.collection('vietnam_trips').doc(tripCode)
       .collection('photos').where('dayN', '==', dayN);
-    const unsub = ref.onSnapshot(snap => {
-      const arr = snap.docs.map(d => ({id: d.id, ...d.data()}));
-      arr.sort((a, b) => (a.uploadedAt || '').localeCompare(b.uploadedAt || ''));
-      setPhotos(arr);
-    });
+    const unsub = ref.onSnapshot(
+      snap => {
+        const arr = snap.docs.map(d => ({id: d.id, ...d.data()}));
+        arr.sort((a, b) => (a.uploadedAt || '').localeCompare(b.uploadedAt || ''));
+        setPhotos(arr);
+      },
+      err => console.error('Photos sync error:', err.code, err.message)
+    );
     return unsub;
   }, [tripCode, dayN]);
 
@@ -1005,9 +1011,12 @@ function CalendarView({onDaySelect, fbStatus, onReset, tripCode}) {
             <div>{statusText}</div>
           </button>
         </div>
+        <div style={{marginTop:6,fontSize:'.72rem',opacity:.75,letterSpacing:1}}>
+          קוד טיול: <strong>{tripCode}</strong>
+        </div>
         {fbStatus === 'error' && (
-          <div style={{marginTop:8,background:'rgba(255,80,80,.25)',borderRadius:8,padding:'6px 10px',fontSize:'.75rem'}}>
-            Firebase לא מחובר — פתח קונסול (F12) לפרטים
+          <div style={{marginTop:6,background:'rgba(255,80,80,.25)',borderRadius:8,padding:'6px 10px',fontSize:'.75rem'}}>
+            Firebase לא מחובר — בדקו קונסול (F12)
           </div>
         )}
       </div>
