@@ -1225,9 +1225,10 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
   };
 
   return (
-    <div className="screen" onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
+    <>
       {dayN > 1 && <button className="day-nav-arrow prev" onClick={() => onBack(dayN - 1)}>&#8249;</button>}
       {dayN < 17 && <button className="day-nav-arrow next" onClick={() => onBack(dayN + 1)}>&#8250;</button>}
+      <div className="screen" onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
@@ -1514,7 +1515,8 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
         </div>
 
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
