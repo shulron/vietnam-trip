@@ -1225,10 +1225,7 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
   };
 
   return (
-    <>
-      {dayN > 1 && <button className="day-nav-arrow prev" onClick={() => onBack(dayN - 1)}>&#8249;</button>}
-      {dayN < 17 && <button className="day-nav-arrow next" onClick={() => onBack(dayN + 1)}>&#8250;</button>}
-      <div className="screen" onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
+    <div className="screen" onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
@@ -1239,12 +1236,23 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
       {/* Hero */}
       <div className="day-hero" style={{background: bg}}>
         <button className="day-hero-back" onClick={onBack}>← ימים</button>
-        <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'4px'}}>
-          <span style={{fontSize:'1.3rem'}}>{REGIONS[day.region]?.flag}</span>
-          <span style={{fontSize:'.8rem',background:'rgba(255,255,255,.2)',padding:'2px 10px',borderRadius:12,fontWeight:600}}>{REGIONS[day.region]?.label}</span>
+        <div style={{display:'flex',alignItems:'center',gap:'14px',marginTop:'8px'}}>
+          {/* Right side — region + title (RTL: first = rightmost) */}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'8px'}}>
+              <span style={{fontSize:'1.3rem'}}>{REGIONS[day.region]?.flag}</span>
+              <span style={{fontSize:'.8rem',background:'rgba(255,255,255,.2)',padding:'2px 10px',borderRadius:12,fontWeight:600}}>{REGIONS[day.region]?.label}</span>
+            </div>
+            <h2 className="day-hero-title">{day.title}</h2>
+          </div>
+          {/* Left side — large day number (RTL: last = leftmost) */}
+          <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+            flexShrink:0,paddingRight:'14px',borderRight:'1.5px solid rgba(255,255,255,.3)'}}>
+            <div style={{fontSize:'3.8rem',fontWeight:'900',lineHeight:1,color:'#fff'}}>{day.n}</div>
+            <div style={{fontSize:'.9rem',fontWeight:'700',color:'rgba(255,255,255,.88)',marginTop:'4px'}}>{day.date}</div>
+            <div style={{fontSize:'.72rem',color:'rgba(255,255,255,.65)',marginTop:'1px'}}>{day.dow}</div>
+          </div>
         </div>
-        <div className="day-meta">יום {day.n} · {day.date} · {day.dow}</div>
-        <h2>{day.title}</h2>
       </div>
 
       <div className="day-body" style={{'--region-color': color}}>
@@ -1515,8 +1523,7 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
         </div>
 
       </div>
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -1859,6 +1866,8 @@ function App() {
 
   return (
     <div className="app">
+      {view === 'day' && dayN > 1 && <button className="day-nav-arrow prev" onClick={() => setDayN(n => n - 1)}>&#8249;</button>}
+      {view === 'day' && dayN < 17 && <button className="day-nav-arrow next" onClick={() => setDayN(n => n + 1)}>&#8250;</button>}
       {view === 'cal' && <CalendarView onDaySelect={handleDaySelect} fbStatus={fbStatus} onReset={handleReset} tripCode={tripCode} />}
       {view === 'day' && dayN && <DayView dayN={dayN} onBack={handleBack} tripCode={tripCode} summaries={summaries} saveSummary={saveSummary} syncStatus={syncStatus} getWeatherForDay={getWeatherForDay} fetchRegionWeather={fetchRegionWeather} weatherLoading={weatherLoading} />}
       {view === 'phrases' && <PhrasesView />}
