@@ -219,6 +219,15 @@ html,body{height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;di
 .clothes-header{font-size:.82rem;font-weight:700;color:#2d3748;margin:10px 0 6px;padding-top:10px;border-top:1px solid #f0f4f8}
 .clothes-item{font-size:.82rem;line-height:1.6;color:#2d3748;padding:1px 0}
 .weather-loading{text-align:center;color:var(--muted);font-size:.85rem;padding:10px 0}
+
+/* Day nav arrows */
+.day-nav-arrow{position:fixed;top:50%;transform:translateY(-50%);width:32px;height:72px;
+  background:rgba(0,0,0,.18);backdrop-filter:blur(6px);border:none;border-radius:10px;
+  color:rgba(255,255,255,.9);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;z-index:50;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.day-nav-arrow:active{background:rgba(0,0,0,.38)}
+.day-nav-arrow.prev{right:3px}
+.day-nav-arrow.next{left:3px}
 </style>
 </head>
 <body>
@@ -1162,6 +1171,8 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
   const [summary, setSummary] = useState(summaries[dayN] || '');
   const [lightbox, setLightbox] = useState(null);
   const saveTimer = useRef(null);
+  const swipeX = useRef(null);
+  const swipeY = useRef(null);
   const {photos, addPhoto, deletePhoto, uploading, setUploading} = usePhotos(tripCode, dayN);
   const {schedItems, setSchedItems, saveItems: saveSchedItems, initFromBase, schedStatus} = useSchedule(tripCode, dayN, day.schedule);
   const [schedEdit, setSchedEdit] = useState(false);
@@ -1202,8 +1213,21 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
 
   const status = syncStatus[dayN];
 
+  const onSwipeStart = (e) => { swipeX.current = e.touches[0].clientX; swipeY.current = e.touches[0].clientY; };
+  const onSwipeEnd = (e) => {
+    if (swipeX.current === null) return;
+    const dx = e.changedTouches[0].clientX - swipeX.current;
+    const dy = e.changedTouches[0].clientY - swipeY.current;
+    swipeX.current = null;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (dx > 0 && dayN > 1) onBack(dayN - 1);
+    if (dx < 0 && dayN < 17) onBack(dayN + 1);
+  };
+
   return (
-    <div className="screen">
+    <div className="screen" onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
+      {dayN > 1 && <button className="day-nav-arrow prev" onClick={() => onBack(dayN - 1)}>&#8249;</button>}
+      {dayN < 17 && <button className="day-nav-arrow next" onClick={() => onBack(dayN + 1)}>&#8250;</button>}
       {lightbox && (
         <div className="lightbox" onClick={() => setLightbox(null)}>
           <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
