@@ -1014,32 +1014,52 @@ function useWeather() {
     if (!coords) return;
     setLoading(l => ({...l, [region]: true}));
     try {
-      // Use archive API — trip dates are in the past (July 2025)
-      const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${coords.lat}&longitude=${coords.lon}&start_date=2026-07-15&end_date=2026-07-31&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&timezone=Asia%2FBangkok`;
-      const res = await fetch(url);
-      const json = await res.json();
-      const d = json.daily;
       const rw = {};
-      d.time.forEach((date, i) => {
-        const n = Math.floor((new Date(date) - new Date('2026-07-15')) / 86400000) + 1;
-        if (n >= 1 && n <= 17) {
-          rw[n] = {
-            wcode: d.weather_code[i],
-            tmax: Math.round(d.temperature_2m_max[i]),
-            tmin: Math.round(d.temperature_2m_min[i]),
-            precip: Math.round(d.precipitation_sum[i] * 10) / 10,
-            wind: Math.round(d.windspeed_10m_max[i]),
-          };
+
+      // 1. Archive 2025 — seasonal baseline (July is very consistent in Vietnam)
+      try {
+        const archUrl = `https://archive-api.open-meteo.com/v1/archive?latitude=${coords.lat}&longitude=${coords.lon}&start_date=2025-07-15&end_date=2025-07-31&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&timezone=Asia%2FBangkok`;
+        const j = await fetch(archUrl).then(r => r.json());
+        if (j.daily?.time) {
+          j.daily.time.forEach((date, i) => {
+            const n = Math.floor((new Date(date) - new Date('2025-07-15')) / 86400000) + 1;
+            if (n >= 1 && n <= 17) rw[n] = {
+              wcode: j.daily.weather_code[i], tmax: Math.round(j.daily.temperature_2m_max[i]),
+              tmin: Math.round(j.daily.temperature_2m_min[i]),
+              precip: Math.round(j.daily.precipitation_sum[i] * 10) / 10,
+              wind: Math.round(j.daily.windspeed_10m_max[i]), seasonal: true,
+            };
+          });
         }
-      });
-      setWeatherData(prev => {
-        const updated = {...prev, [region]: rw};
-        localStorage.setItem('vn_weather', JSON.stringify(updated));
-        return updated;
-      });
+      } catch(e) { console.warn('Archive 2025 failed:', e.message); }
+
+      // 2. Forecast API — overrides archive for days within 16-day window
+      try {
+        const fUrl = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max&timezone=Asia%2FBangkok&forecast_days=16`;
+        const j = await fetch(fUrl).then(r => r.json());
+        if (j.daily?.time) {
+          j.daily.time.forEach((date, i) => {
+            const n = Math.floor((new Date(date) - new Date('2026-07-15')) / 86400000) + 1;
+            if (n >= 1 && n <= 17) rw[n] = {
+              wcode: j.daily.weather_code[i], tmax: Math.round(j.daily.temperature_2m_max[i]),
+              tmin: Math.round(j.daily.temperature_2m_min[i]),
+              precip: Math.round(j.daily.precipitation_sum[i] * 10) / 10,
+              wind: Math.round(j.daily.windspeed_10m_max[i]), seasonal: false,
+            };
+          });
+        }
+      } catch(e) { console.warn('Forecast failed:', e.message); }
+
+      if (Object.keys(rw).length > 0) {
+        setWeatherData(prev => {
+          const updated = {...prev, [region]: rw};
+          localStorage.setItem('vn_weather', JSON.stringify(updated));
+          return updated;
+        });
+      }
     } catch(e) {
       console.warn('Weather fetch failed:', region, e.message);
-      fetchedRef.current[region] = false; // allow retry
+      fetchedRef.current[region] = false;
     } finally {
       setLoading(l => ({...l, [region]: false}));
     }
@@ -1210,6 +1230,7 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
             <div className="section-card-header">
               <span className="s-icon">{WMO[weatherForDay.wcode]?.i || '🌡️'}</span>
               <h3>מזג האוויר · {day.date}</h3>
+              {weatherForDay.seasonal && <span style={{fontSize:'.68rem',color:'var(--muted)',fontWeight:500,marginRight:'auto'}}>ממוצע עונתי</span>}
             </div>
             <div className="section-card-body">
               <div className="weather-main">
@@ -1234,12 +1255,14 @@ function DayView({dayN, onBack, tripCode, summaries, saveSummary, syncStatus, ge
               </div>
             </div>
           </div>
-        ) : isWeatherLoading ? (
+        ) : (
           <div className="section-card">
-            <div className="section-card-header"><span className="s-icon">🌤️</span><h3>מזג האוויר</h3></div>
-            <div className="section-card-body"><div className="weather-loading">טוען נתוני מזג אוויר מהאינטרנט... 🌐</div></div>
+            <div className="section-card-header"><span className="s-icon">🌤️</span><h3>מזג האוויר · {day.date}</h3></div>
+            <div className="section-card-body"><div className="weather-loading">
+              {isWeatherLoading ? 'טוען נתוני מזג אוויר... 🌐' : 'נתוני מזג אוויר לא זמינים כרגע'}
+            </div></div>
           </div>
-        ) : null}
+        )}
 
         {/* Wake up */}
         {day.wake ? (
